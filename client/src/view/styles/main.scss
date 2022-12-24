@@ -1,0 +1,12 @@
+@import './variables.scss';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+@import './base.scss';
+@import './utilities.scss';
