@@ -1,7 +1,7 @@
 import { apiHeaders, ApiMethod, ApiUrl } from 'shared/constants';
 
 export class BaseApi {
-  protected async get<Payload, Result>(url: ApiUrl, payload: Payload): Promise<Result> {
+  protected async get<Payload, Result>(url: ApiUrl, payload?: Payload): Promise<Result> {
     const response = await fetch(location.origin + url, {
       method: ApiMethod.GET,
       headers: apiHeaders,

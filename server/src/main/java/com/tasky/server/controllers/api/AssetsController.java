@@ -1,25 +1,23 @@
 package com.tasky.server.controllers.api;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tasky.server.constants.ApiPath;
-import com.tasky.server.models.Project;
-import com.tasky.server.services.ProjectsService;
+import com.tasky.server.models.assets.Assets;
+import com.tasky.server.services.AssetsService;
 
 @RestController
-@RequestMapping(path = ApiPath.PROJECTS)
-public class ProjectsController {
+@RequestMapping(path = ApiPath.ASSETS)
+public class AssetsController {
   
   @Autowired
-  private ProjectsService service;
+  private AssetsService service;
 
   @GetMapping
-  public List<Project> getProjects() {
-    return this.service.getProjects();
+  public Assets getAssets() {
+    return this.service.getAssets();
   }
 }

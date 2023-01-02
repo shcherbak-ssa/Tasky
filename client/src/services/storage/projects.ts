@@ -5,6 +5,6 @@ import { BaseStorage } from './base-storage';
 
 export class ProjectsStorage extends BaseStorage implements BaseProjectsStorage {
   public addProjects(projects: Project[]): void {
-    this.storage.commit(StoreMutation.PROJECTS_ADD, projects);
+    this.storage.commit(StoreMutation.ADD_PROJECTS, projects);
   }
 }

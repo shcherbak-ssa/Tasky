@@ -1,12 +1,8 @@
-import { Project } from 'models/project';
 import { ProjectsApi, ProjectsStorage, ProjectsController as BaseProjectController, ProjectSchema } from 'shared/types';
+import { Project } from 'models/project';
+import { BaseController } from './base-controller';
 
-export class ProjectController implements BaseProjectController {
-  public constructor(
-    private api: ProjectsApi,
-    private storage: ProjectsStorage,
-  ) {}
-
+export class ProjectController extends BaseController<ProjectsApi, ProjectsStorage> implements BaseProjectController {
   public createProject(): Project {
     return Project.create();
   }
@@ -21,8 +17,7 @@ export class ProjectController implements BaseProjectController {
 
       return true;
     } catch (e) {
-      console.log(e);
-
+      console.log(e); // @TODO: implement error
       return false;
     }
   }

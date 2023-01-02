@@ -1,5 +1,7 @@
 package com.tasky.server.models;
 
+import com.tasky.server.constants.DatabaseTable;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,7 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "projects")
+@Table(name = DatabaseTable.PROJECTS)
 public class Project {
 
   @Id

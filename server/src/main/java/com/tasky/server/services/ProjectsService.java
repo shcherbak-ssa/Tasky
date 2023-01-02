@@ -10,6 +10,7 @@ import com.tasky.server.models.Project;
 
 @Service
 public class ProjectsService {
+  
   @Autowired
   private ProjectsDatabase database;
 

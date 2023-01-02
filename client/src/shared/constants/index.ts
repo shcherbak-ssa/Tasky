@@ -5,6 +5,7 @@ export const EMPTY_STRING = '';
 
 // Controllers
 export enum Controller {
+  ASSETS = 'controller/assets',
   PROJECTS = 'controller/projects',
 }
 
@@ -15,6 +16,7 @@ export const apiHeaders = {
 };
 
 export enum ApiUrl {
+  ASSETS = '/api/assets',
   PROJECTS = '/api/projects',
 }
 
@@ -30,11 +32,15 @@ export enum PageRoute {
 
 // Store
 export const storeStateDefault: StoreState = {
+  assets: {
+    colors: [],
+  },
   projects: [],
 };
 
 export enum StoreMutation {
-  PROJECTS_ADD = 'projects/add',
+  ADD_ASSETS = 'add/assets',
+  ADD_PROJECTS = 'add/projects',
 }
 
 // Icons

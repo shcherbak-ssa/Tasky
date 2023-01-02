@@ -9,19 +9,27 @@
 </template>
 
 <script setup lang="ts">
-import { PageRoute } from 'shared/constants';
-import AppHeaderContainer from 'view/containers/AppHeaderContainer.vue';
 import { onMounted } from 'vue';
 import { Router, useRouter } from 'vue-router';
+import { Controller, PageRoute } from 'shared/constants';
+import { AssetsController } from 'shared/types';
+import { useController } from 'view/hooks';
+
+import AppHeaderContainer from 'view/containers/AppHeaderContainer.vue';
 
 // Properties
 const router: Router = useRouter();
+const assetsController: AssetsController = useController(Controller.ASSETS);
 
 // Hooks
-// @TODO: remove
-onMounted(() => {
-  if (router.currentRoute.value.path === '/') {
-    router.push(PageRoute.PROJECTS);
+onMounted(async () => {
+  const isLoadedSuccess: boolean = await assetsController.loadAssets();
+
+  if (isLoadedSuccess) {
+    // @TODO: remove
+    if (router.currentRoute.value.path === '/') {
+      router.push(PageRoute.PROJECTS);
+    }
   }
 });
 
