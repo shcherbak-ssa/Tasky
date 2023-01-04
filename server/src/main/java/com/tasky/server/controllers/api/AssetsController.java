@@ -5,12 +5,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tasky.server.constants.ApiPath;
+import com.tasky.server.constants.ApiEndpoint;
 import com.tasky.server.models.assets.Assets;
 import com.tasky.server.services.AssetsService;
 
 @RestController
-@RequestMapping(path = ApiPath.ASSETS)
+@RequestMapping(path = ApiEndpoint.ASSETS)
 public class AssetsController {
   
   @Autowired

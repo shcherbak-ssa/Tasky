@@ -1,18 +1,26 @@
-import { Controller } from 'shared/constants';
 import type { Project } from 'models/project';
+import { ApiEndpoint, Controller } from 'shared/constants';
+
+// Api
+export type ApiRequest<B, P> = {
+  endpoint: ApiEndpoint;
+  body: B;
+  params: P;
+}
 
 // Assets
 export type Assets = {
-  colors: Color[];
+  colors: AssetsColor[];
 }
 
-export type Color = {
+export type AssetsColor = {
   id: number;
   color: string;
 }
 
 export interface AssetsController {
   loadAssets(): Promise<boolean>;
+  getAssets<K extends keyof Assets>(key: K): Assets[K];
 }
 
 export interface AssetsApi {
@@ -21,6 +29,7 @@ export interface AssetsApi {
 
 export interface AssetsStorage {
   addAssets(assets: Assets): void
+  getAssets<K extends keyof Assets>(key: K): Assets[K];
 }
 
 // Controllers
@@ -47,6 +56,7 @@ export type ProjectSchema = {
   id: number;
   name: string;
   description: string;
+  color: AssetsColor;
 }
 
 export type ProjectDraft = Omit<ProjectSchema, 'id'>;
@@ -54,15 +64,21 @@ export type ProjectDraft = Omit<ProjectSchema, 'id'>;
 export type ProjectFitler = {}
 
 export interface ProjectsController {
-  createProject(): Project;
-  loadProjects(): Promise<boolean>;
-  save(project: Project): Promise<boolean>;
+  getNewProject(): Project;
+  loadProject(): Promise<boolean>;
+  saveProject(project: Project): Promise<boolean>;
+  deleteProject(project: Project): Promise<boolean>;
 }
 
 export interface ProjectsApi {
   getProjects(filter: ProjectFitler): Promise<ProjectSchema[]>;
+  createProject(draft: Partial<ProjectDraft>): Promise<ProjectSchema>;
+  updateProject(id: number, draft: Partial<ProjectDraft>): Promise<void>;
+  deleteProject(id: number): Promise<void>;
 }
 
 export interface ProjectsStorage {
-  addProjects(projects: ProjectSchema[]): void;
+  addProjects(payload: Project | Project[]): void;
+  updateProject(project: Project): void;
+  removeProject(id: number): void;
 }

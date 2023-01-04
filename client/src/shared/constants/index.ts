@@ -1,4 +1,4 @@
-import { StoreState } from 'shared/types';
+import type { StoreState } from 'shared/types';
 
 export const ZERO = 0;
 export const EMPTY_STRING = '';
@@ -15,13 +15,17 @@ export const apiHeaders = {
   'Accept-Type': 'application/json',
 };
 
-export enum ApiUrl {
+export enum ApiEndpoint {
   ASSETS = '/api/assets',
   PROJECTS = '/api/projects',
+  PROJECTS_ID = '/api/projects/:id',
 }
 
 export enum ApiMethod {
   GET = 'GET',
+  POST = 'POST',
+  PUT = 'PUT',
+  DELETE = 'DELETE',
 }
 
 // Pages
@@ -39,17 +43,16 @@ export const storeStateDefault: StoreState = {
 };
 
 export enum StoreMutation {
-  ADD_ASSETS = 'add/assets',
-  ADD_PROJECTS = 'add/projects',
+  ASSETS_ADD = 'assets/add',
+  PROJECTS_ADD = 'projects/add',
+  PROJECTS_UPDATE = 'projects/update',
+  PROJECTS_REMOVE = 'projects/remove',
 }
 
 // Icons
 export enum IconName {
-  SEARCH = 'ic:round-search',
-  MENU = 'ic:round-menu',
-  DASHBOARD = 'ic:round-dashboard',
-  PROJECTS = 'mdi:calendar-check',
-  NOTES = 'mdi:note-edit-outline',
+  SEARCH = 'pi-search',
+  MENU = 'pi-bars',
 }
 
 // Styles

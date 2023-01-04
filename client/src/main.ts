@@ -1,6 +1,4 @@
-import { Project } from 'models/project';
-import { Controller } from 'shared/constants';
-import {
+import type {
   AssetsApi as BaseAssetsApi,
   AssetsStorage as BaseAssetsStorage,
   AssetsController as BaseAssetsController,
@@ -11,27 +9,40 @@ import {
   Validator,
   ProjectDraft,
 } from 'shared/types';
-import { AssetsController, ProjectController } from './controllers';
+import { Project } from 'models/project';
+import { Controller } from 'shared/constants';
+import { AssetsController, BaseController, ProjectController } from './controllers';
 import { AssetsApi, ProjectsApi } from './services/api';
 import { ProjectsStorage } from './services/storage';
 import { AssetsStorage } from './services/storage/assets';
 import { ProjectsValidator } from './services/validation';
 import { setupView } from './view';
 
-const projectValidator: Validator<ProjectDraft> = new ProjectsValidator();
-Project.setValidator(projectValidator);
+setupValidators();
+const controllers: ControllerList = setupControllers();
 
-const assetsApi: BaseAssetsApi = new AssetsApi();
-const assetsStorage: BaseAssetsStorage = new AssetsStorage();
-const assetsController: BaseAssetsController = new AssetsController(assetsApi, assetsStorage);
+setupView(controllers);
 
-const projectsApi: BaseProjectsApi = new ProjectsApi();
-const projectsStorage: BaseProjectsStorage = new ProjectsStorage();
-const projectsController: BaseProjectsController = new ProjectController(projectsApi, projectsStorage);
+function setupValidators(): void {
+  const projectValidator: Validator<ProjectDraft> = new ProjectsValidator();
+  Project.setValidator(projectValidator);
+}
 
-const constollers: ControllerList = {
-  [Controller.ASSETS]: assetsController,
-  [Controller.PROJECTS]: projectsController,
-};
+function setupControllers(): ControllerList {
+  const assetsApi: BaseAssetsApi = new AssetsApi();
+  const assetsStorage: BaseAssetsStorage = new AssetsStorage();
+  const assetsController: BaseAssetsController = new AssetsController(assetsApi, assetsStorage);
+  
+  const projectsApi: BaseProjectsApi = new ProjectsApi();
+  const projectsStorage: BaseProjectsStorage = new ProjectsStorage();
+  const projectsController: BaseProjectsController = new ProjectController(projectsApi, projectsStorage);
+  
+  const controllers: ControllerList = {
+    [Controller.ASSETS]: assetsController,
+    [Controller.PROJECTS]: projectsController,
+  };
+  
+  BaseController.setControllers(controllers);
 
-setupView(constollers);
+  return controllers;
+}

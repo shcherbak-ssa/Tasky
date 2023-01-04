@@ -1,6 +1,6 @@
-import { InjectionKey } from 'vue';
+import type { InjectionKey } from 'vue';
 import { createStore, useStore as baseUseStore, Store as BaseStore, CommitOptions } from 'vuex';
-import { StoreState } from 'shared/types';
+import type { StoreState } from 'shared/types';
 import { storeStateDefault } from 'shared/constants';
 import { mutations, Mutations } from './mutations';
 

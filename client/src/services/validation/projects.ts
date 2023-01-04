@@ -1,4 +1,4 @@
-import { ProjectDraft, Validator } from 'shared/types';
+import type { ProjectDraft, Validator } from 'shared/types';
 import { BaseValidator } from './base-validator';
 
 // @TODO: implement

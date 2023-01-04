@@ -11,12 +11,13 @@
   "dependencies": {
     "ajv": "^8.11.2",
     "core-js": "^3.8.3",
+    "primeicons": "^6.0.1",
+    "primevue": "^3.21.0",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3",
     "vuex": "^4.0.0"
   },
   "devDependencies": {
-    "@iconify/vue": "^4.0.2",
     "@types/jest": "^27.0.1",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",

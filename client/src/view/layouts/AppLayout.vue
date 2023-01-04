@@ -11,8 +11,8 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { Router, useRouter } from 'vue-router';
+import type { AssetsController } from 'shared/types';
 import { Controller, PageRoute } from 'shared/constants';
-import { AssetsController } from 'shared/types';
 import { useController } from 'view/hooks';
 
 import AppHeaderContainer from 'view/containers/AppHeaderContainer.vue';

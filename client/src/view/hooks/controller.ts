@@ -1,11 +1,8 @@
 import { inject } from 'vue';
-import { ControllerList } from 'shared/types';
+import type { ControllerList } from 'shared/types';
 
-export function useController<
-  Key extends keyof ControllerList,
-  Controller = ControllerList[Key]
->(key: Key): Controller {
-  const projectsController: Controller | undefined = inject(key);
+export function useController<K extends keyof ControllerList>(key: K): ControllerList[K] {
+  const projectsController: ControllerList[K] | undefined = inject(key);
 
   if (projectsController) {
     return projectsController;

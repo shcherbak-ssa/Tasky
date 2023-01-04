@@ -1,4 +1,4 @@
-import { Assets, AssetsApi, AssetsController as BaseAssetsController, AssetsStorage } from 'shared/types';
+import type { Assets, AssetsApi, AssetsController as BaseAssetsController, AssetsStorage } from 'shared/types';
 import { BaseController } from './base-controller';
 
 export class AssetsController extends BaseController<AssetsApi, AssetsStorage> implements BaseAssetsController {
@@ -13,5 +13,9 @@ export class AssetsController extends BaseController<AssetsApi, AssetsStorage> i
       console.log(e); // @TODO: implement error
       return false;
     }
+  }
+
+  public getAssets<K extends keyof Assets>(key: K): Assets[K] {
+    return this.storage.getAssets(key);
   }
 }
