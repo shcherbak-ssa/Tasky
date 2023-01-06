@@ -2,10 +2,10 @@ import type { Project } from 'models/project';
 import { ApiEndpoint, Controller } from 'shared/constants';
 
 // Api
-export type ApiRequest<B, P> = {
+export type ApiRequest<P, B> = {
   endpoint: ApiEndpoint;
-  body: B;
   params: P;
+  body: B;
 }
 
 // Assets
@@ -71,8 +71,8 @@ export interface ProjectsController {
 }
 
 export interface ProjectsApi {
-  getProjects(filter: ProjectFitler): Promise<ProjectSchema[]>;
-  createProject(draft: Partial<ProjectDraft>): Promise<ProjectSchema>;
+  getProjects(filter?: ProjectFitler): Promise<Project[]>;
+  createProject(draft: Partial<ProjectDraft>): Promise<Project>;
   updateProject(id: number, draft: Partial<ProjectDraft>): Promise<void>;
   deleteProject(id: number): Promise<void>;
 }

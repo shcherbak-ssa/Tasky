@@ -1,19 +1,9 @@
-import type {
-  ProjectsApi,
-  ProjectsStorage,
-  ProjectsController as BaseProjectController,
-  ProjectSchema,
-  AssetsColor,
-  ProjectDraft,
-} from 'shared/types';
+import type { ProjectsApi, ProjectsStorage, ProjectsController as BaseProjectController, AssetsColor } from 'shared/types';
 import { Controller } from 'shared/constants';
 import { Project } from 'models/project';
 import { BaseController } from './base-controller';
 
 export class ProjectController extends BaseController<ProjectsApi, ProjectsStorage> implements BaseProjectController {
-  private static convertSchemaToProject(schemas: ProjectSchema[]): Project[] {
-    return schemas.map((schema) => Project.create(schema));
-  }
 
   public getNewProject(): Project {
     const project: Project = Project.create();
@@ -26,10 +16,8 @@ export class ProjectController extends BaseController<ProjectsApi, ProjectsStora
 
   public async loadProject(): Promise<boolean> {
     try {
-      const projectSchemas: ProjectSchema[] = await this.api.getProjects({});
-      console.log(projectSchemas);
-      const projects: Project[] = ProjectController.convertSchemaToProject(projectSchemas);
-
+      const projects: Project[] = await this.api.getProjects();
+      
       this.storage.addProjects(projects);
 
       return true;
@@ -67,20 +55,13 @@ export class ProjectController extends BaseController<ProjectsApi, ProjectsStora
   }
 
   private async createProject(project: Project): Promise<void> {
-    const draft: Partial<ProjectDraft> = Project.getDraft(project);
-    const createdProjectSchema: ProjectSchema = await this.api.createProject(draft);
+    const createdProject: Project = await this.api.createProject(project.draft);
 
-    const [ createdProject ] = ProjectController.convertSchemaToProject([ createdProjectSchema ]);
     this.storage.addProjects(createdProject);
   }
 
   private async updateProject(project: Project): Promise<void> {
-    const draft: Partial<ProjectDraft> = Project.getDraft(project);
-    await this.api.updateProject(project.id, draft);
-
-    const updatedSchema: ProjectSchema = Project.mergeSchemaWithDraft(project);
-    const [ updatedProject ] = ProjectController.convertSchemaToProject([ updatedSchema ]);
-
-    this.storage.updateProject(updatedProject);
+    await this.api.updateProject(project.id, project.draft);
+    this.storage.updateProject(project.updatedProject);
   }
 }

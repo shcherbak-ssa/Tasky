@@ -9,13 +9,13 @@ class ProjectDefault implements ProjectSchema {
 }
 
 export class Project {
-  private schema: ProjectSchema;
-  private draft: Partial<ProjectDraft>;
+  private pSchema: ProjectSchema;
+  private pDraft: Partial<ProjectDraft>;
   private static validator: Validator<ProjectDraft>;
 
   private constructor(schema: ProjectSchema) {
-    this.schema = schema;
-    this.draft = {};
+    this.pSchema = schema;
+    this.pDraft = {};
   }
 
   public static create(schema: ProjectSchema = new ProjectDefault()): Project {
@@ -26,27 +26,16 @@ export class Project {
     return project.id === ZERO;
   }
 
-  public static getDraft(project: Project): Partial<ProjectDraft> {
-    return project.draft;
-  }
-
-  public static mergeSchemaWithDraft(project: Project): ProjectSchema {
-    return {
-      ...project.schema,
-      ...project.draft,
-    };
-  }
-
   public static setValidator(validator: Validator<ProjectDraft>): void {
     Project.validator = validator;
   }
 
   public get id(): number {
-    return this.schema.id;
+    return this.pSchema.id;
   }
 
   public get name(): string {
-    return this.draft.name || this.schema.name;
+    return this.pDraft.name || this.pSchema.name;
   }
 
   public set name(name: string) {
@@ -54,7 +43,7 @@ export class Project {
   }
 
   public get description(): string {
-    return this.draft.description || this.schema.description;
+    return this.pDraft.description || this.pSchema.description;
   }
 
   public set description(description: string) {
@@ -62,17 +51,28 @@ export class Project {
   }
 
   public get color(): AssetsColor {
-    return this.draft.color || this.schema.color;
+    return this.pDraft.color || this.pSchema.color;
   }
 
   public set color(color: AssetsColor) {
     this.updateDraft('color', color);
   }
 
+  public get draft(): Partial<Readonly<ProjectDraft>> {
+    return this.pDraft;
+  }
+
+  public get updatedProject(): Project {
+    return Project.create({
+      ...this.pSchema,
+      ...this.pDraft,
+    });
+  }
+
   private updateDraft<K extends keyof ProjectDraft>(key: K, value: ProjectDraft[K]): void {
-    if (this.schema[key] === value) return;
+    if (this.pSchema[key] === value) return;
 
     Project.validator.validate(key, value);
-    this.draft[key] = value;
+    this.pDraft[key] = value;
   }
 }

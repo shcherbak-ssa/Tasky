@@ -28,6 +28,12 @@ export enum ApiMethod {
   DELETE = 'DELETE',
 }
 
+export enum ApiResponseCode {
+  SUCCESS = 200,
+  CREATED = 201,
+  NO_CONTENT = 204,
+}
+
 // Pages
 export enum PageRoute {
   PROJECTS = '/projects',
