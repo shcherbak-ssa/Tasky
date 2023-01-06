@@ -1,28 +1,18 @@
 <template>
-  <div class="base-icon duration-200" @click.stop="handleClick">
-    <i class="text-base pi" :class="props.icon" />
-  </div>
+  <i class="base-icon pi" :class="props.icon" />
 </template>
 
 <script setup lang="ts">
-import type { IconName } from 'shared/constants';
-
 type ComponentProps = {
-  icon: IconName;
+  icon: string;
 }
 
 // Properties
 const props = defineProps<ComponentProps>();
-const emits = defineEmits(['icon-click']);
-
-// Methods
-function handleClick(): void {
-  emits('icon-click');
-}
 </script>
 
 <style scoped lang="scss">
 .base-icon {
-  color: var(--primary-color);
+  font-size: inherit;
 }
 </style>

@@ -8,12 +8,23 @@ import org.springframework.stereotype.Service;
 
 import com.tasky.server.database.ProjectsDatabase;
 import com.tasky.server.models.Project;
+import com.tasky.server.shared.exceptions.ResourceNotFoundException;
 
 @Service
 public class ProjectsService {
   
   @Autowired
   private ProjectsDatabase database;
+
+  public Project getProjectById(Long id) throws ResourceNotFoundException {
+    Optional<Project> foundProject = this.database.findById(id);
+
+    if (foundProject.isPresent()) {
+      return foundProject.get();
+    }
+
+    throw new ResourceNotFoundException("Project not found.");
+  }
 
   public List<Project> getProjects() {
     return this.database.findAll();
@@ -23,20 +34,23 @@ public class ProjectsService {
     return this.database.save(newProject);
   }
 
-  public void updateProject(Project projectToUpdate) {
-    Optional<Project> currentProjectFromDB = this.database.findById(projectToUpdate.getId());
+  public void updateProject(Project projectUpdates) throws ResourceNotFoundException {
+    Optional<Project> projectFromDB = this.database.findById(projectUpdates.getId());
 
-    if (currentProjectFromDB.isPresent()) {
-      Project currentProject = currentProjectFromDB.get();
-      Project updatedProject = currentProject.mergeWithUpdates(projectToUpdate);
+    if (projectFromDB.isPresent()) {
+      Project projectToUpdate = projectFromDB.get();
+      Project updatedProject = projectToUpdate.mergeWithUpdates(projectUpdates);
 
       this.database.save(updatedProject);
+
+      return;
     }
 
-    // @TODO: implement not found
+    throw new ResourceNotFoundException("Project not found.");
   }
 
   public void deleteProject(Long id) {
     this.database.deleteById(id);
   }
+
 }

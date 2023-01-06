@@ -1,84 +1,41 @@
 import type { Project } from 'models/project';
-import { ApiEndpoint, Controller } from 'shared/constants';
+import type { ApiEndpoint, Controller } from 'shared/constants';
+import type { AppController, AppState } from './app';
+import type { Assets, AssetsController } from './assets';
+import type { ProjectsController, ProjectsState } from './projects';
+import type { SettingsController, SettingsState } from './settings';
 
-// Api
+export * from './app';
+export * from './assets';
+export * from './projects';
+export * from './settings';
+
+export type ErrorObject<T> = {
+  key: keyof T;
+  message: string;
+}
+
 export type ApiRequest<P, B> = {
   endpoint: ApiEndpoint;
-  params: P;
-  body: B;
+  params?: P;
+  body?: B;
 }
 
-// Assets
-export type Assets = {
-  colors: AssetsColor[];
+export type StoreState = {
+  app: AppState;
+  assets: Assets;
+  projects: ProjectsState;
+  settings: SettingsState;
 }
 
-export type AssetsColor = {
-  id: number;
-  color: string;
+export interface Validator<T> {
+  validateToCreate(object: T): void;
+  validateToUpdate(object: T): void;
 }
 
-export interface AssetsController {
-  loadAssets(): Promise<boolean>;
-  getAssets<K extends keyof Assets>(key: K): Assets[K];
-}
-
-export interface AssetsApi {
-  loadAssets(): Promise<Assets>;
-}
-
-export interface AssetsStorage {
-  addAssets(assets: Assets): void
-  getAssets<K extends keyof Assets>(key: K): Assets[K];
-}
-
-// Controllers
 export type ControllerList = {
+  [Controller.APP]: AppController;
   [Controller.ASSETS]: AssetsController;
   [Controller.PROJECTS]: ProjectsController;
-}
-
-// Store
-export type StoreState = {
-  assets: Assets;
-  projects: Project[];
-}
-
-// Validation
-export interface Validator<Type> {
-  validate<Key extends keyof Type>(label: Key, value: Type[Key]): void;
-  validateToCreate(object: Type): void;
-  validateToUpdate(object: Type): void;
-}
-
-// Projects
-export type ProjectSchema = {
-  id: number;
-  name: string;
-  description: string;
-  color: AssetsColor;
-}
-
-export type ProjectDraft = Omit<ProjectSchema, 'id'>;
-
-export type ProjectFitler = {}
-
-export interface ProjectsController {
-  getNewProject(): Project;
-  loadProject(): Promise<boolean>;
-  saveProject(project: Project): Promise<boolean>;
-  deleteProject(project: Project): Promise<boolean>;
-}
-
-export interface ProjectsApi {
-  getProjects(filter?: ProjectFitler): Promise<Project[]>;
-  createProject(draft: Partial<ProjectDraft>): Promise<Project>;
-  updateProject(id: number, draft: Partial<ProjectDraft>): Promise<void>;
-  deleteProject(id: number): Promise<void>;
-}
-
-export interface ProjectsStorage {
-  addProjects(payload: Project | Project[]): void;
-  updateProject(project: Project): void;
-  removeProject(id: number): void;
+  [Controller.SETTINGS]: SettingsController;
 }

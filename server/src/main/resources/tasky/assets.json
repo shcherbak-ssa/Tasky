@@ -1,0 +1,118 @@
+{
+  "colors": [
+    {
+      "bgColor": "#C7C4C4",
+      "textColor": "#000000"
+    },
+    {
+      "bgColor": "#E8384F",
+      "textColor": "#FFFFFF"
+    },
+    {
+      "bgColor": "#FD817D",
+      "textColor": "#000000"
+    },
+    {
+      "bgColor": "#FDAE33",
+      "textColor": "#000000"
+    },
+    {
+      "bgColor": "#EECC16",
+      "textColor": "#000000"
+    },
+    {
+      "bgColor": "#A4C61A",
+      "textColor": "#000000"
+    },
+    {
+      "bgColor": "#62BB35",
+      "textColor": "#000000"
+    },
+    {
+      "bgColor": "#37A862",
+      "textColor": "#FFFFFF"
+    },
+    {
+      "bgColor": "#208EA3",
+      "textColor": "#FFFFFF"
+    },
+    {
+      "bgColor": "#4178BC",
+      "textColor": "#FFFFFF"
+    },
+    {
+      "bgColor": "#7A71F6",
+      "textColor": "#FFFFFF"
+    },
+    {
+      "bgColor": "#AA71FF",
+      "textColor": "#FFFFFF"
+    },
+    {
+      "bgColor": "#E37CFF",
+      "textColor": "#000000"
+    },
+    {
+      "bgColor": "#EA4E9D",
+      "textColor": "#FFFFFF"
+    },
+    {
+      "bgColor": "#FCA7E4",
+      "textColor": "#000000"
+    },
+    {
+      "bgColor": "#8D9F9B",
+      "textColor": "#FFFFFF"
+    }
+  ],
+  "projectIcons": [
+    {
+      "family": "gridicons",
+      "name": "briefcase"
+    },
+    {
+      "family": "gridicons",
+      "name": "bug"
+    },
+    {
+      "family": "gridicons",
+      "name": "computer"
+    },
+    {
+      "family": "gridicons",
+      "name": "code"
+    },
+    {
+      "family": "gridicons",
+      "name": "chat"
+    },
+    {
+      "family": "gridicons",
+      "name": "globe"
+    },
+    {
+      "family": "gridicons",
+      "name": "flag"
+    },
+    {
+      "family": "gridicons",
+      "name": "multiple-users"
+    },
+    {
+      "family": "gridicons",
+      "name": "cog"
+    },
+    {
+      "family": "gridicons",
+      "name": "stats-alt"
+    },
+    {
+      "family": "gridicons",
+      "name": "site"
+    },
+    {
+      "family": "gridicons",
+      "name": "book"
+    }
+  ]
+}

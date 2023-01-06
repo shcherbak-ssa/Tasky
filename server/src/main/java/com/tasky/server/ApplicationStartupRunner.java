@@ -1,29 +1,34 @@
 package com.tasky.server;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import com.tasky.server.models.assets.AssetsColor;
+import com.tasky.server.models.Assets;
+import com.tasky.server.models.Settings;
 import com.tasky.server.services.AssetsService;
+import com.tasky.server.services.SettingsService;
+import com.tasky.server.shared.constants.SettingsConstants;
+import com.tasky.server.shared.utils.LocalResourceLoader;
 
 @Component
-@PropertySource("classpath:tasky.properties")
 public class ApplicationStartupRunner implements CommandLineRunner {
   
   @Autowired
   private Environment env;
 
   @Autowired
+  LocalResourceLoader localResourceLoader;
+
+  @Autowired
   private AssetsService assetsService;
+
+  // @TODO: remove
+  @Autowired
+  private SettingsService settingsService;
 
   protected final Log logger = LogFactory.getLog(getClass());
 
@@ -34,23 +39,18 @@ public class ApplicationStartupRunner implements CommandLineRunner {
 
     this.loadAssetsToDatabase();
     this.logger.info("Load assets to database");
+
+    // @TODO: remove
+    Settings settings = new Settings(SettingsConstants.PROJECTS_VIEW_TILES);
+    this.settingsService.createSettings(settings);
+    this.logger.info("Create settings");
   }
 
   private void loadAssetsToDatabase() throws Exception {
-    String colors = this.env.getProperty("tasky.assets.colors");
+    Assets assets = this.localResourceLoader.loadJSONResource("tasky/assets.json", Assets.class);
 
-    if (colors == null) {
-      // @TODO: add exception
-      throw new Exception("Assets colors not defined");
-    }
-
-    List<AssetsColor> assetsColors = Arrays.asList(colors.split(","))
-      .stream()
-      .map((String color) -> new AssetsColor(color))
-      .collect(Collectors.toList());
-    
     // @TODO: add if not exist
-    this.assetsService.addAssetsColors(assetsColors);
+    this.assetsService.addAssest(assets);
   }
 
   private void addConsoleSpace() {

@@ -1,12 +1,54 @@
-@import './variables.scss';
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: 'Roboto', sans-serif;
+:root {
+  --app-header-height: 60px;
 }
 
-@import './base.scss';
-@import './utilities.scss';
+body {
+  font-family: 'Roboto', sans-serif;
+  position: relative;
+}
+
+.popup-container {
+  @apply z-50 h-screen w-screen absolute top-0 left-0;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+@layer base {
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  h1 {
+    @apply text-xl;
+  }
+  
+  h2 {
+    @apply text-lg;
+  }
+
+  h3 {
+    @apply text-base;
+  }
+}
+
+@layer utilities {
+  .full {
+    @apply w-full h-full;
+  }
+  
+  .click {
+    @apply relative cursor-pointer;
+  
+    &::after {
+      @apply absolute top-0 right-0 bottom-0 left-0 block;
+      content: '';
+    }
+  }
+  
+  .flex-center {
+    @apply flex items-center justify-center;
+  }
+}

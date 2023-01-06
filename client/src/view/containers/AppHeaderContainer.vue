@@ -1,26 +1,27 @@
 <template>
-  <header class="border-b-2 border-gray-200 w-full py-4">
-    <div class="container flex items-center justify-between">
+  <header class="app-header border-b-2 border-gray-200 flex items-center w-full">
+    <div class="container flex items-center justify-between duration-200">
       <div class="flex items-center gap-3">
-        <BaseIcon :icon="IconName.MENU" />
+        <BaseIcon icon="pi-bars" />
         <h1>
           <span>Tasky</span>
         </h1>
       </div>
       <div class="">
-        <BaseIcon :icon="IconName.SEARCH" />
+        <BaseIcon icon="pi-search" />
       </div>
     </div>
   </header>
 </template>
 
 <script setup lang="ts">
-import { IconName } from 'shared/constants';
-import BaseIcon from 'view/components/base/BaseIcon.vue';
-
 // Properties
 
 // Methods
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.app-header {
+  height: var(--app-header-height);
+}
+</style>

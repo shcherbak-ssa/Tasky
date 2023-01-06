@@ -1,12 +1,16 @@
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
 import { PageRoute } from 'shared/constants';
 
-import ProjectsPage from 'view/pages/ProjectsPage.vue';
+import OverviewPage from 'view/pages/OverviewPage.vue';
+
+export enum RouteName {
+  PROJECTS_EDIT = 'projects-edit',
+}
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: PageRoute.PROJECTS,
-    component: ProjectsPage,
+    path: PageRoute.OVERVIEW,
+    component: OverviewPage,
   },
 ];
 

@@ -1,18 +1,19 @@
 package com.tasky.server.models;
 
-import com.tasky.server.constants.DatabaseTable;
-import com.tasky.server.models.assets.AssetsColor;
+import java.time.LocalDate;
+
+import com.tasky.server.shared.constants.ProjectsConstants;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = DatabaseTable.PROJECTS)
+@Table(name = ProjectsConstants.DATABASE_TABLE_NAME)
 public class Project {
 
   @Id
@@ -25,19 +26,23 @@ public class Project {
   @Column
   private String description;
 
-  @OneToOne
+  @ManyToOne
   private AssetsColor color;
+
+  @ManyToOne
+  private AssetsProjectIcon icon;
+
+  @Column
+  private LocalDate dueDate;
 
   Project() {}
 
-  Project(
-    String name,
-    String description,
-    AssetsColor color
-  ) {
+  Project(String name, String description, AssetsColor color, AssetsProjectIcon icon, LocalDate dueDate) {
     this.name = name;
     this.description = description;
     this.color = color;
+    this.icon = icon;
+    this.dueDate = dueDate;
   }
 
   public Long getId() {
@@ -72,14 +77,34 @@ public class Project {
     this.color = color;
   }
 
-  public Project mergeWithUpdates(Project projectToUpdate) {
+  public AssetsProjectIcon getIcon() {
+    return this.icon;
+  }
+
+  public void setIcon(AssetsProjectIcon icon) {
+    this.icon = icon;
+  }
+
+  public LocalDate getDueDate() {
+    return dueDate;
+  }
+
+  public void setDueDate(LocalDate dueDate) {
+    this.dueDate = dueDate;
+  }
+
+  public Project mergeWithUpdates(Project projectUpdates) {
     Project updatedProject = new Project();
 
     updatedProject.setId(this.id);
-    updatedProject.setName(projectToUpdate.name == null ? this.name : projectToUpdate.name);
-    updatedProject.setDescription(projectToUpdate.description == null ? this.description : projectToUpdate.description);
-    updatedProject.setColor(projectToUpdate.color == null ? this.color : projectToUpdate.color);
+    updatedProject.setName(projectUpdates.name == null ? this.name : projectUpdates.name);
+    updatedProject.setDescription(projectUpdates.description == null ? this.description : projectUpdates.description);
+    updatedProject.setColor(projectUpdates.color == null ? this.color : projectUpdates.color);
+    updatedProject.setIcon(projectUpdates.icon == null ? this.icon : projectUpdates.icon);
+    // @TODO: refactor control
+    updatedProject.setDueDate(projectUpdates.dueDate == null ? this.dueDate : projectUpdates.dueDate);
 
     return updatedProject;
   }
+
 }
