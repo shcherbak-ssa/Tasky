@@ -6,20 +6,23 @@
     "jsx": "preserve",
     "moduleResolution": "node",
     "skipLibCheck": true,
+    "strictNullChecks": true,
     "esModuleInterop": true,
+    "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "useDefineForClassFields": true,
+    "importsNotUsedAsValues": "error",
     "sourceMap": true,
-    "baseUrl": ".",
+    "baseUrl": "./",
     "types": [
       "webpack-env",
       "jest"
     ],
     "paths": {
-      "@/*": [
-        "src/*"
-      ]
+      "models/*": ["src/models/*"],
+      "shared/*": ["src/shared/*"],
+      "view/*": ["src/view/*"]
     },
     "lib": [
       "esnext",

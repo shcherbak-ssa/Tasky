@@ -1,0 +1,100 @@
+.p-scrollpanel {
+  & &-bar {
+    background-color: var(--bluegray-200);
+  }
+
+  & &-bar-y {
+    width: 5px;
+  }
+}
+
+.p-speeddial {
+  @apply absolute right-3 bottom-3;
+
+  &-button.p-button.p-button-icon-only {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  &-action {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+}
+
+.p-inputtext {
+  @apply duration-200 w-full;
+  border: 1px solid transparent;
+
+  &:not(.p-invalid) {
+    &:enabled:focus {
+      box-shadow: none;
+      border-color: var(--text-color-secondary);
+    }
+  
+    &:enabled:hover {
+      border-color: var(--text-color-secondary);
+    }
+  }
+}
+
+.p-inputtextarea {
+  @apply p-0;
+  border: none;
+}
+
+.p-button {
+  &-icon-only.p-button-rounded.p-button-sm {
+    @apply w-8 h-8 p-0;
+  }
+}
+
+.p-calendar {
+  .p-button {
+    @apply absolute;
+    color: var(--primary-color);
+    background: transparent;
+    border: none;
+    border-radius: 0;
+
+    &:hover {
+      color: var(--primary-color);
+      background: transparent;
+      border: none;
+    }
+  }
+
+  &-w-btn .p-inputtext {
+    border-radius: var(--border-radius) !important;
+    padding-left: 3rem;
+
+    &:enabled:hover, &:enabled:focus {
+      background: var(--gray-200);
+      border-color: transparent;
+    }
+  }
+}
+
+.p-message {
+  margin: 0;
+
+  & &-wrapper {
+    @apply p-5;
+  }
+}
+
+.p-toast {
+  &-message &-message-content {
+    border: 0;
+  }
+}
+
+.p-dialog {
+  & &-content {
+    @apply border-t-2 border-gray-200 pt-6;
+  }
+
+  &.p-confirm-dialog .p-confirm-dialog-message {
+    margin: 0;
+  }
+}
