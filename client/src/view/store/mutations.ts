@@ -19,11 +19,11 @@ export const mutations: MutationTree<StoreState> & Mutations = {
   },
 
   [StoreMutation.ADD_ASSETS](state: StoreState, assets: Assets) : void {
-    state.assets = assets;
+    state.app.assets = assets;
   },
 
   [StoreMutation.SET_SETTINGS](state: StoreState, settings: Settings): void {
-    state.settings = settings;
+    state.app.settings = settings;
   },
 
   [StoreMutation.ADD_PROJECTS](state: StoreState, projects: Project[]): void {

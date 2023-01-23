@@ -12,4 +12,5 @@ export class BaseController<Api, Storage, ValidatorEntity> {
   public static setControllers(controllers: ControllerList): void {
     BaseController.controllers = controllers;
   }
+
 }

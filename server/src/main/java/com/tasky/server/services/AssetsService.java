@@ -45,4 +45,5 @@ public class AssetsService {
   private List<AssetsProjectIcon> getProjectIcons() {
     return this.projectIconsDatabase.findAll();
   }
+
 }

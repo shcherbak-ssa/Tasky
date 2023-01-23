@@ -16,6 +16,7 @@ class SettingsSchemaDefault implements SettingsSchema {
   public static create(schema?: SettingsSchema): SettingsSchemaDefault {
     return new SettingsSchemaDefault(schema);
   }
+
 }
 
 export class Settings {

@@ -89,16 +89,16 @@ export enum ToastGroup {
 export const defaultStoreState: StoreState = {
   app: {
     activePopup: null,
-  },
-  assets: {
-    colors: [],
-    projectIcons: [],
+    settings: null,
+    assets: {
+      colors: [],
+      projectIcons: [],
+    },
   },
   projects: {
     list: [],
     active: null,
   },
-  settings: null,
 };
 
 export enum StoreMutation {

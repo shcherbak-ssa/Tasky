@@ -24,9 +24,7 @@ export type ApiRequest<P, Q, B> = {
 
 export type StoreState = {
   app: AppState;
-  assets: Assets;
   projects: ProjectsState;
-  settings: SettingsState;
 }
 
 export interface Validator<T> {

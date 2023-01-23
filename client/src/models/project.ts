@@ -160,7 +160,7 @@ export class Project {
     } else {
       this.updates.updatedAt = new Date();
     }
-    
+
     return cloneObject(this.updates);
   }
 

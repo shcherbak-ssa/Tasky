@@ -6,20 +6,17 @@ import type { Settings } from 'models/settings';
 export type Getters = {
   getAssetsColor(state: StoreState): (id: number) => AssetsColor;
   getAssetsProjectIcon(state: StoreState): (id: number) => AssetsProjectIcon;
-
+  getSettings(state: StoreState): () => Settings;
   hasProject(state: StoreState): (id: number) => boolean;
   getProject(state: StoreState): (id: number) => Project | undefined;
   getActiveProject(state: StoreState): () => Project;
-
-  getSettings(state: StoreState): () => Settings;
 }
 
 export const getters: GetterTree<StoreState, StoreState> & Getters = {
 
-  // Assets
   getAssetsColor(state: StoreState) {
     return (searchId: number): AssetsColor => {
-      const color: AssetsColor | undefined = state.assets.colors.find(({ id }) => id === searchId);
+      const color: AssetsColor | undefined = state.app.assets.colors.find(({ id }) => id === searchId);
 
       if (color) {
         return color;
@@ -33,7 +30,7 @@ export const getters: GetterTree<StoreState, StoreState> & Getters = {
   getAssetsProjectIcon(state: StoreState) {
     return (searchId: number): AssetsProjectIcon => {
       const projectIcon: AssetsProjectIcon | undefined
-        = state.assets.projectIcons.find(({ id }) => id === searchId);
+        = state.app.assets.projectIcons.find(({ id }) => id === searchId);
 
       if (projectIcon) {
         return projectIcon;
@@ -44,7 +41,17 @@ export const getters: GetterTree<StoreState, StoreState> & Getters = {
     }
   },
 
-  // Projects
+  getSettings(state: StoreState) {
+    return (): Settings => {
+      if (state.app.settings) {
+        return state.app.settings;
+      }
+
+      // @TODO: add error
+      throw new Error('Settings not found');
+    }
+  },
+
   hasProject(state: StoreState) {
     return (id: number): boolean => {
       return !!getters.getProject(state)(id);
@@ -68,18 +75,6 @@ export const getters: GetterTree<StoreState, StoreState> & Getters = {
       // @TODO: add error
       throw new Error('No project selected');
     };
-  },
-
-  // Settings
-  getSettings(state: StoreState) {
-    return (): Settings => {
-      if (state.settings) {
-        return state.settings;
-      }
-
-      // @TODO: add error
-      throw new Error('Settings not found');
-    }
   },
 
 };

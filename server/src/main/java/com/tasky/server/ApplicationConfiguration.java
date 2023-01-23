@@ -26,4 +26,5 @@ public class ApplicationConfiguration {
   public ErrorResponse errorResponse() {
     return new ErrorResponse();
   }
+
 }

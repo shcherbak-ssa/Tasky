@@ -93,4 +93,8 @@
   & &-content {
     @apply border-t-2 border-gray-200 pt-6;
   }
+
+  &.p-confirm-dialog .p-confirm-dialog-message {
+    margin: 0;
+  }
 }

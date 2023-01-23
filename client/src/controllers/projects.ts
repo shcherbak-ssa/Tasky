@@ -1,11 +1,26 @@
-import type { ProjectsApi, ProjectsStorage, ProjectsController as BaseProjectController, ProjectUpdates, AssetsController, Validator, ErrorObject } from 'shared/types';
+import type {
+  ProjectsApi,
+  ProjectsStorage,
+  ProjectsController as BaseProjectController,
+  ProjectUpdates,
+  AssetsController,
+  Validator,
+  ErrorObject,
+} from 'shared/types';
 import { Controller, ErrorName, ZERO } from 'shared/constants';
 import { Project } from 'models/project';
 import { BaseController } from './base-controller';
 
-export class ProjectController extends BaseController<ProjectsApi, ProjectsStorage, ProjectUpdates> implements BaseProjectController {
+export class ProjectController
+  extends BaseController<ProjectsApi, ProjectsStorage, ProjectUpdates>
+  implements BaseProjectController
+{
 
-  public static create(api: ProjectsApi, storage: ProjectsStorage, validator: Validator<ProjectUpdates>): ProjectController {
+  public static create(
+    api: ProjectsApi,
+    storage: ProjectsStorage,
+    validator: Validator<ProjectUpdates>,
+  ): ProjectController {
     return new ProjectController(api, storage, validator);
   }
 
@@ -14,7 +29,8 @@ export class ProjectController extends BaseController<ProjectsApi, ProjectsStora
       let projectToActivate: Project;
 
       if (id === ZERO) {
-        const assetsController: AssetsController = ProjectController.controllers[Controller.ASSETS];
+        const assetsController: AssetsController
+          = ProjectController.controllers[Controller.ASSETS];
 
         projectToActivate = Project.create();
         projectToActivate.color = assetsController.getAssets('colors')[0];
@@ -25,12 +41,12 @@ export class ProjectController extends BaseController<ProjectsApi, ProjectsStora
         if (!foundProject) {
           throw new Error('Project hot found');
         }
-        
+
         projectToActivate = Project.copy(foundProject);
       }
 
       this.storage.setActiveProject(projectToActivate);
-  
+
       return true;
     } catch (e) {
       console.log(e); // @TODO: add error
@@ -65,7 +81,7 @@ export class ProjectController extends BaseController<ProjectsApi, ProjectsStora
       } else {
         await this.updateProject(project);
       }
-    
+
       return null;
     } catch (e: any) {
       console.log(e); // @TODO: add error
@@ -82,7 +98,7 @@ export class ProjectController extends BaseController<ProjectsApi, ProjectsStora
     try {
       await this.api.deleteProject(id);
       this.storage.removeProject(id);
-    
+
       return true;
     } catch (e) {
       console.log(e); // @TODO: add error

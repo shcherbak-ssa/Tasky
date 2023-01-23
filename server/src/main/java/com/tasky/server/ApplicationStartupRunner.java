@@ -67,4 +67,5 @@ public class ApplicationStartupRunner implements CommandLineRunner {
       this.env.getProperty("server.port")
     ));
   }
+
 }

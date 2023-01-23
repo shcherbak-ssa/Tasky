@@ -22,4 +22,5 @@ public class AssetsController {
 
     return new ResponseEntity<Assets>(assets, HttpStatus.OK);
   }
+
 }

@@ -1,8 +1,6 @@
 import type { ProjectsView } from 'shared/constants';
 import type { Settings } from 'models/settings';
 
-export type SettingsState = Settings | null;
-
 export type SettingsSchema = {
   id: number;
   projectsView: ProjectsView;

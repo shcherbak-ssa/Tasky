@@ -3,7 +3,7 @@ import type { ProjectUpdates } from 'shared/types';
 import { projectValidationRules } from 'shared/constants';
 import { BaseValidator } from './base-validator';
 
-export class ProjectsValidator extends BaseValidator<ProjectUpdates>{
+export class ProjectsValidator extends BaseValidator<ProjectUpdates> {
 
   protected schema: Joi.ObjectSchema<ProjectUpdates> = Joi.object({
     name: Joi.string().empty(),

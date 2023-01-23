@@ -1,4 +1,11 @@
-import type { AppApi, AppController as BaseAppController, AppStorage, AssetsController, SettingsController, Validator } from 'shared/types';
+import type {
+  AppApi,
+  AppController as BaseAppController,
+  AppStorage,
+  AssetsController,
+  SettingsController,
+  Validator,
+} from 'shared/types';
 import { Controller, Popup } from 'shared/constants';
 import { BaseController } from './base-controller';
 
