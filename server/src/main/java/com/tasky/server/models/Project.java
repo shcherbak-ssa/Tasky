@@ -1,6 +1,7 @@
 package com.tasky.server.models;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.tasky.server.shared.constants.ProjectsConstants;
 
@@ -35,14 +36,23 @@ public class Project {
   @Column
   private LocalDate dueDate;
 
+  @Column
+  private LocalDateTime createdAt;
+
+  @Column
+  private LocalDateTime updatedAt;
+
   Project() {}
 
-  Project(String name, String description, AssetsColor color, AssetsProjectIcon icon, LocalDate dueDate) {
+  Project(String name, String description, AssetsColor color, AssetsProjectIcon icon,
+    LocalDate dueDate, LocalDateTime createdAt, LocalDateTime updatedAt) {
     this.name = name;
     this.description = description;
     this.color = color;
     this.icon = icon;
     this.dueDate = dueDate;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
   }
 
   public Long getId() {
@@ -93,18 +103,42 @@ public class Project {
     this.dueDate = dueDate;
   }
 
+  public LocalDateTime getCreatedAt() {
+    return this.createdAt;
+  }
+
+  public void setCreatedAt(LocalDateTime createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  public LocalDateTime getUpdatedAt() {
+    return this.updatedAt;
+  }
+
+  public void setUpdatedAt(LocalDateTime updatedAt) {
+    this.updatedAt = updatedAt;
+  }
+
   public Project mergeWithUpdates(Project projectUpdates) {
     Project updatedProject = new Project();
 
     updatedProject.setId(this.id);
+    updatedProject.setCreatedAt(this.createdAt);
+    updatedProject.setUpdatedAt(projectUpdates.updatedAt);
+
     updatedProject.setName(projectUpdates.name == null ? this.name : projectUpdates.name);
     updatedProject.setDescription(projectUpdates.description == null ? this.description : projectUpdates.description);
     updatedProject.setColor(projectUpdates.color == null ? this.color : projectUpdates.color);
     updatedProject.setIcon(projectUpdates.icon == null ? this.icon : projectUpdates.icon);
-    // @TODO: refactor control
     updatedProject.setDueDate(projectUpdates.dueDate == null ? this.dueDate : projectUpdates.dueDate);
 
     return updatedProject;
+  }
+
+  @Override
+  public String toString() {
+    return "Project [id=" + id + ", name=" + name + ", description=" + description + ", color=" + color + ", icon="
+        + icon + ", dueDate=" + dueDate + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
   }
 
 }

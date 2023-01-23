@@ -9,6 +9,8 @@ class ProjectSchemaDefault implements ProjectSchema {
   public color: AssetsColor;
   public icon: AssetsProjectIcon;
   public dueDate: Date | null;
+  public createdAt: Date | null;
+  public updatedAt: Date | null;
 
   private constructor(schema?: ProjectSchema) {
     this.id = schema?.id || ZERO;
@@ -17,6 +19,8 @@ class ProjectSchemaDefault implements ProjectSchema {
     this.color = schema?.color || { id: ZERO, bgColor: EMPTY_STRING, textColor: EMPTY_STRING };
     this.icon = schema?.icon || { id: ZERO, family: EMPTY_STRING, name: EMPTY_STRING };
     this.dueDate = schema?.dueDate ? getProjectDueDate(new Date(schema.dueDate)) : null;
+    this.createdAt = schema?.createdAt ? new Date(schema.createdAt) : null;
+    this.updatedAt = schema?.updatedAt ? new Date(schema.updatedAt) : null;
   }
 
   public static create(schema?: ProjectSchema): ProjectSchemaDefault {
@@ -134,6 +138,14 @@ export class Project {
     this.updates.dueDate = date;
   }
 
+  public get createdAt(): Date | null {
+    return this.schema.createdAt;
+  }
+
+  public get updatedAt(): Date | null {
+    return this.schema.updatedAt;
+  }
+
   public isNewProject(): boolean {
     return this.schema.id === ZERO;
   }
@@ -143,6 +155,12 @@ export class Project {
   }
 
   public getUpdates(): ProjectUpdates {
+    if (this.isNewProject()) {
+      this.updates.createdAt = new Date();
+    } else {
+      this.updates.updatedAt = new Date();
+    }
+    
     return cloneObject(this.updates);
   }
 

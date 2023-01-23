@@ -19,11 +19,18 @@ export class ProjectsValidator extends BaseValidator<ProjectUpdates>{
       name: Joi.string().max(projectValidationRules.iconNameLength),
     }),
     dueDate: Joi.date().empty(null),
+    createdAt: Joi.date().empty(null),
+    updatedAt: Joi.date().empty(null),
   });
 
   protected schemaToCreate: Joi.ObjectSchema = this.schema.keys({
     name: this.schema.extract('name').required(),
     color: this.schema.extract('color').required(),
+    createdAt: this.schema.extract('createdAt').required(),
+  });
+
+  protected schemaToUpdate: Joi.ObjectSchema = this.schema.keys({
+    updatedAt: this.schema.extract('updatedAt').required(),
   });
 
   public static create(): ProjectsValidator {

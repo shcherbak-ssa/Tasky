@@ -6,6 +6,7 @@ export type SettingsState = Settings | null;
 export type SettingsSchema = {
   id: number;
   projectsView: ProjectsView;
+  updatedAt: Date | null;
 }
 
 export type SettingsUpdates = Partial<

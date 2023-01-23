@@ -1,5 +1,7 @@
 package com.tasky.server;
 
+import java.time.LocalDateTime;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,9 +43,9 @@ public class ApplicationStartupRunner implements CommandLineRunner {
     this.logger.info("Load assets to database");
 
     // @TODO: remove
-    Settings settings = new Settings(SettingsConstants.PROJECTS_VIEW_TILES);
+    Settings settings = new Settings(SettingsConstants.PROJECTS_VIEW_TILES, LocalDateTime.now());
     this.settingsService.createSettings(settings);
-    this.logger.info("Create settings");
+    this.logger.info("Add settings");
   }
 
   private void loadAssetsToDatabase() throws Exception {

@@ -13,6 +13,8 @@ export type ProjectSchema = {
   color: AssetsColor;
   icon: AssetsProjectIcon;
   dueDate: Date | null;
+  createdAt: Date | null;
+  updatedAt: Date | null;
 }
 
 export type ProjectUpdates = Partial<Omit<ProjectSchema, 'id'>>;

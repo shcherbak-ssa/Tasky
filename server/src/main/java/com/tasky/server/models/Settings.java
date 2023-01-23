@@ -1,5 +1,7 @@
 package com.tasky.server.models;
 
+import java.time.LocalDateTime;
+
 import com.tasky.server.shared.constants.SettingsConstants;
 
 import jakarta.persistence.Column;
@@ -20,10 +22,14 @@ public class Settings {
   @Column
   private String projectsView;
 
+  @Column
+  private LocalDateTime updatedAt;
+
   public Settings() {}
 
-  public Settings(String projectsView) {
+  public Settings(String projectsView, LocalDateTime updatedAt) {
     this.projectsView = projectsView;
+    this.updatedAt = updatedAt;
   }
 
   public Long getId() {
@@ -42,13 +48,28 @@ public class Settings {
     this.projectsView = projectsView;
   }
 
+  public LocalDateTime getUpdatedAt() {
+    return this.updatedAt;
+  }
+
+  public void setUpdatedAt(LocalDateTime updatedAt) {
+    this.updatedAt = updatedAt;
+  }
+
   public Settings mergeWithUpdates(Settings settingsUpdates) {
     Settings updatedSettings = new Settings();
 
     updatedSettings.setId(this.id);
+    updatedSettings.setUpdatedAt(settingsUpdates.updatedAt);
+    
     updatedSettings.setProjectsView(settingsUpdates.projectsView == null ? this.projectsView : settingsUpdates.projectsView);
 
     return updatedSettings;
+  }
+
+  @Override
+  public String toString() {
+    return "Settings [id=" + id + ", projectsView=" + projectsView + ", updatedAt=" + updatedAt + "]";
   }
 
 }

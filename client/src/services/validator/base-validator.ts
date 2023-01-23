@@ -6,6 +6,7 @@ export class BaseValidator<T> implements Validator<T> {
   
   protected schema: Joi.ObjectSchema<T> = Joi.object();
   protected schemaToCreate: Joi.ObjectSchema = Joi.object();
+  protected schemaToUpdate: Joi.ObjectSchema = Joi.object();
 
   protected constructor() {}
 
@@ -18,7 +19,7 @@ export class BaseValidator<T> implements Validator<T> {
   }
 
   public validateToUpdate(projectUpdates: T): void {
-    const { error } = this.schema.validate(projectUpdates);
+    const { error } = this.schemaToUpdate.validate(projectUpdates);
     
     if (error) {
       this.throwValidationError(error);

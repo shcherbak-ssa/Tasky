@@ -2,16 +2,9 @@ import type { Settings } from 'models/settings';
 import type { SettingsApi, SettingsController as BaseSettingsController, SettingsStorage, SettingsUpdates, Validator } from 'shared/types';
 import { BaseController } from './base-controller';
 
-export class SettingsController
-  extends BaseController<SettingsApi, SettingsStorage, SettingsUpdates>
-  implements BaseSettingsController
-{
+export class SettingsController extends BaseController<SettingsApi, SettingsStorage, SettingsUpdates> implements BaseSettingsController {
 
-  public static create(
-    api: SettingsApi,
-    storage: SettingsStorage,
-    validator: Validator<SettingsUpdates>,
-  ): SettingsController {
+  public static create(api: SettingsApi, storage: SettingsStorage, validator: Validator<SettingsUpdates>): SettingsController {
     return new SettingsController(api, storage, validator);
   }
 

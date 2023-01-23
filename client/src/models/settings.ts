@@ -5,10 +5,12 @@ import { cloneObject } from 'shared/utils';
 class SettingsSchemaDefault implements SettingsSchema {
   public id: number;
   public projectsView: ProjectsView;
+  public updatedAt: Date | null;
 
   private constructor(schema?: SettingsSchema) {
     this.id = schema?.id || ZERO;
     this.projectsView = schema?.projectsView || ProjectsView.TILES;
+    this.updatedAt = schema?.updatedAt ? new Date(schema.updatedAt) : null;
   }
 
   public static create(schema?: SettingsSchema): SettingsSchemaDefault {
@@ -48,6 +50,10 @@ export class Settings {
     this.updates.projectsView = view;
   }
 
+  public get updatedAt(): Date | null {
+    return this.schema.updatedAt;
+  }
+
   public hasUpdates(): boolean {
     const { id, ...updates } = this.updates;
 
@@ -55,6 +61,8 @@ export class Settings {
   }
 
   public getUpdates(): SettingsUpdates {
+    this.updates.updatedAt = new Date();
+
     return cloneObject(this.updates);
   }
 

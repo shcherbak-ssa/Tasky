@@ -15,9 +15,10 @@ export type ErrorObject<T> = {
   message: string;
 }
 
-export type ApiRequest<P, B> = {
+export type ApiRequest<P, Q, B> = {
   endpoint: ApiEndpoint;
   params?: P;
+  query?: Q;
   body?: B;
 }
 

@@ -3,8 +3,9 @@ import type { StoreState } from 'shared/types';
 export * from './settings';
 export * from './projects';
 
-export const ZERO = 0;
-export const EMPTY_STRING = '';
+export const ZERO: number = 0;
+export const EMPTY_STRING: string = '';
+export const QUERY_URL_SEPARATOR: string = '?';
 
 export enum ErrorName {
   VALIDATION_ERROR = 'ValidationError',

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tasky.server.models.Project;
@@ -46,10 +47,14 @@ public class ProjectsController {
   }
 
   @PutMapping(path = ApiEndpoints.PROJECTS_ID)
-  public ResponseEntity<Void> updateProject(@PathVariable Long id, @RequestBody Project projectUpdates) throws ResourceNotFoundException {
+  public ResponseEntity<Void> updateProject(
+    @PathVariable Long id,
+    @RequestParam(defaultValue = "false") String hasDueDate,
+    @RequestBody Project projectUpdates
+  ) throws ResourceNotFoundException {
     projectUpdates.setId(id);
     
-    this.service.updateProject(projectUpdates);
+    this.service.updateProject(projectUpdates, Boolean.parseBoolean(hasDueDate));
 
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
