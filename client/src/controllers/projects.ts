@@ -6,8 +6,9 @@ import type {
   AssetsController,
   Validator,
   ErrorObject,
+  AppController,
 } from 'shared/types';
-import { Controller, ErrorName, ZERO } from 'shared/constants';
+import { Controller, EMPTY_STRING, ErrorName, NotificationGroup, NotificationType, ZERO } from 'shared/constants';
 import { Project } from 'models/project';
 import { BaseController } from './base-controller';
 
@@ -75,29 +76,59 @@ export class ProjectController
   }
 
   public async saveProject(project: Project): Promise<ErrorObject<ProjectUpdates> | null> {
+    const appController: AppController = ProjectController.controllers[Controller.APP];
+    const isNewProject: boolean = project.isNewProject();
+
     try {
-      if (project.isNewProject()) {
+      if (isNewProject) {
         await this.createProject(project);
       } else {
         await this.updateProject(project);
       }
 
+      appController.showNotification({
+        type: NotificationType.SUCCESS,
+        heading: isNewProject ? 'Created' : 'Updated',
+        message: `Project <strong>${project.name}</strong> ${isNewProject ? 'created' : 'updated'} successfully`,
+      });
+
       return null;
     } catch (e: any) {
-      console.log(e); // @TODO: add error
-
       if (e.name === ErrorName.VALIDATION_ERROR) {
-        return e.error;
+        appController.showNotification(e.notification);
+
+        return e.errors;
       }
+
+      console.log(e); // @TODO: add error
 
       return null;
     }
   }
 
-  public async deleteProject({ id }: Project): Promise<boolean> {
+  public async deleteProject({ id, name: projectName }: Project): Promise<boolean> {
+    const appController: AppController = ProjectController.controllers[Controller.APP];
+
     try {
+      appController.showNotification({
+        type: NotificationType.INFO,
+        heading: EMPTY_STRING,
+        message: `Deleting <strong>${projectName}</strong> project`,
+        group: NotificationGroup.DELETE_PROCESSING,
+      });
+
       await this.api.deleteProject(id);
       this.storage.removeProject(id);
+
+      appController.removeNotification();
+
+      setTimeout(() => {
+        appController.showNotification({
+          type: NotificationType.SUCCESS,
+          heading: 'Deleted',
+          message: `Project <strong>${projectName}</strong> deleted successfully`,
+        });
+      });
 
       return true;
     } catch (e) {

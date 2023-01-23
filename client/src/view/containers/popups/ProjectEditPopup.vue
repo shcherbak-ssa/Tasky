@@ -22,12 +22,6 @@
     </template>
 
     <div class="">
-      <div v-if="state.projectError" class="mb-8">
-        <BaseMessage severity="error" :closable="false">
-          <div>{{ state.projectError.message }}</div>
-        </BaseMessage>
-      </div>
-
       <div class="flex gap-2 h-12 mb-8">
         <ProjectAssets
           mode="edit"
@@ -37,13 +31,17 @@
           @icon-selected="updateProjectIcon"
         />
 
-        <div class="project-name w-full">
+        <div class="name w-full">
           <BaseInputText
             placeholder="Project name"
-            :class="{ 'p-invalid': state.projectError && state.projectError.key === 'name' }"
+            :class="{ 'p-invalid': state.projectError.name }"
             :value="activeProject.name"
             @input="updateProjectName"
           />
+
+          <div v-if="state.projectError.name" class="p-error text-sm">
+            Project {{ state.projectError.name }}
+          </div>
         </div>
       </div>
 
@@ -72,13 +70,11 @@
 
 <script setup lang="ts">
 import { computed, onMounted, reactive } from 'vue';
-import { ToastSeverity } from 'primevue/api';
-import { useToast } from 'primevue/usetoast';
 import PrimevueTextarea from 'primevue/textarea';
 
 import type { Project } from 'models/project';
 import type { AppController, ErrorObject, ProjectsController, ProjectUpdates } from 'shared/types';
-import { Controller, ToastGroup, TOAST_LIFE } from 'shared/constants';
+import { Controller } from 'shared/constants';
 import { getProjectDueDate } from 'shared/utils';
 import { useController } from 'view/hooks';
 import { type Store, useStore } from 'view/store';
@@ -90,7 +86,7 @@ type State = {
   isPopupOpen: boolean;
   isSaveProcessing: boolean;
   isNewProject: boolean;
-  projectError: ErrorObject<ProjectUpdates> | null;
+  projectError: ErrorObject<ProjectUpdates>;
 }
 
 // Properties
@@ -98,11 +94,10 @@ const state = reactive<State>({
   isPopupOpen: true,
   isSaveProcessing: false,
   isNewProject: false,
-  projectError: null,
+  projectError: {},
 });
 
 const store: Store = useStore();
-const toast = useToast();
 
 const appController: AppController = useController(Controller.APP);
 const projectsController: ProjectsController = useController(Controller.PROJECTS);
@@ -124,20 +119,13 @@ onMounted(() => {
 async function saveProject(): Promise<void> {
   state.isSaveProcessing = true;
 
-  const error: ErrorObject<ProjectUpdates> | null = await projectsController.saveProject(activeProject.value);
-  
-  if (error) {
-    state.projectError = error;
-  } else {
-    toast.add({
-      severity: ToastSeverity.SUCCESS,
-      summary: state.isNewProject ? 'Created' : 'Updated',
-      detail: `Project <strong>${activeProject.value.name}</strong> ${state.isNewProject ? 'created' : 'updated'} successfully`,
-      group: ToastGroup.MESSAGE,
-      life: TOAST_LIFE,
-    });
+  const errors: ErrorObject<ProjectUpdates> | null = await projectsController.saveProject(activeProject.value);
 
+  if (errors) {
+    state.projectError = errors;
+  } else {
     closePopup();
+
     projectsController.removeActiveProject();
   }
 
@@ -187,7 +175,7 @@ function closePopup(): void {
 </script>
 
 <style scoped lang="scss">
-.project-name .p-inputtext {
+.name .p-inputtext {
   @apply font-semibold text-2xl h-full;
 }
 </style>

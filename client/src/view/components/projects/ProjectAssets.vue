@@ -84,11 +84,11 @@ const assetsPanel = ref(null);
 const store: Store = useStore();
 
 const assetsColors = computed<AssetsColor[]>(() => {
-  return store.state.assets.colors;
+  return store.state.app.assets.colors;
 });
 
 const assetsProjectIcons = computed<AssetsProjectIcon[]>(() => {
-  return store.state.assets.projectIcons;
+  return store.state.app.assets.projectIcons;
 });
 
 // Methods
@@ -107,13 +107,9 @@ function updateProjectIconBgColor(e: Event, iconId: number): void {
   const { style } = e.target as HTMLElement;
 
   if (e.type === 'mouseover') {
-    const { bgColor, textColor } = props.project.color;
-    
-    style.background = bgColor + HEXColorOpacity.OPACITY_30;
-    // style.color = textColor;
+    style.background = props.project.color.bgColor + HEXColorOpacity.OPACITY_30;
   } else {
     style.background = 'transparent';
-    // style.color = 'inherit';
   }
 }
 </script>

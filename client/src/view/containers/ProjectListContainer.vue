@@ -49,16 +49,13 @@
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue';
-import { type Router, useRouter } from 'vue-router';
 import type { MenuItem } from 'primevue/menuitem';
-import { ToastSeverity } from 'primevue/api';
 import { useConfirm } from 'primevue/useconfirm';
-import { useToast } from 'primevue/usetoast';
 
 import type { ProjectsController, SettingsController } from 'shared/types';
 import type { Project } from 'models/project';
 import type { Settings } from 'models/settings';
-import { Controller, ProjectsView, ToastGroup, TOAST_LIFE, ZERO } from 'shared/constants';
+import { Controller, ProjectsView, ZERO } from 'shared/constants';
 import { useController, useEditProjectPopup } from 'view/hooks';
 import { type Store, useStore } from 'view/store';
 
@@ -82,7 +79,6 @@ const state = reactive<State>({
 const projectsViewMenu = ref(null);
 
 const store: Store = useStore();
-const toast = useToast();
 const confirm = useConfirm();
 const openEditProjectPopup = useEditProjectPopup();
 
@@ -165,27 +161,9 @@ function deleteProject(project: Project): void {
     accept: () => {
       state.deletingProjectId = project.id;
 
-      toast.add({
-        severity: ToastSeverity.INFO,
-        summary: `Deleting <strong>${project.name}</strong> project`,
-        group: ToastGroup.DELETE_PROCESSING,
-      });
-
       projectsController.deleteProject(project)
-        .then((success: boolean) => {
-          if (success) {
-            toast.removeGroup(ToastGroup.DELETE_PROCESSING);
-
-            toast.add({
-              severity: ToastSeverity.SUCCESS,
-              summary: `Deleted`,
-              detail: `Project <strong>${project.name}</strong> deleted successfully`,
-              group: ToastGroup.MESSAGE,
-              life: TOAST_LIFE,
-            });
-          }
-
-          state.deletingProjectId = 0;
+        .then(() => {
+          state.deletingProjectId = ZERO;
         });
     },
   });

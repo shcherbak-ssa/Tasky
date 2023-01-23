@@ -1,9 +1,8 @@
-import type { Project } from 'models/project';
 import type { ApiEndpoint, Controller } from 'shared/constants';
 import type { AppController, AppState } from './app';
-import type { Assets, AssetsController } from './assets';
+import type { AssetsController } from './assets';
 import type { ProjectsController, ProjectsState } from './projects';
-import type { SettingsController, SettingsState } from './settings';
+import type { SettingsController } from './settings';
 
 export * from './app';
 export * from './assets';
@@ -11,8 +10,7 @@ export * from './projects';
 export * from './settings';
 
 export type ErrorObject<T> = {
-  key: keyof T;
-  message: string;
+  [key in keyof T]?: string;
 }
 
 export type ApiRequest<P, Q, B> = {

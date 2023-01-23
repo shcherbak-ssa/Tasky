@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import type { Validator } from 'shared/types';
+import type { ErrorObject, Validator } from 'shared/types';
 import { ValidationError } from 'shared/errors';
 
 export class BaseValidator<T> implements Validator<T> {
@@ -27,12 +27,11 @@ export class BaseValidator<T> implements Validator<T> {
   }
 
   private throwValidationError(error: Joi.ValidationError): void {
-    const [{ message, context }] = error.details;
+    const errors = Object.fromEntries(
+      error.details.map(({ message, context }) => [ context?.key as keyof T, message ])
+    ) as ErrorObject<T>;
 
-    throw new ValidationError<T>({
-      key: context?.key as keyof T,
-      message: `Project ${message}`,
-    });
+    throw new ValidationError<T>(errors);
   }
 
 }

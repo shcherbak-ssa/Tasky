@@ -46,7 +46,22 @@ export enum ApiResponseCode {
 }
 
 // View
-export const TOAST_LIFE: number = 3000;
+export const NOTIFICATION_LIFE: number = 5000;
+
+export enum NotificationGroup {
+  DELETE_PROCESSING = 'delete-processing',
+  MESSAGE = 'message',
+}
+
+export enum NotificationType {
+  INFO = 'info',
+  SUCCESS = 'success',
+  ERROR = 'error',
+}
+
+export enum CssClass {
+  HIDDEN = 'hidden',
+}
 
 export enum Popup {
   EDIT_PROJECT = 'edit-project',
@@ -80,15 +95,11 @@ export enum HEXColorOpacity {
   OPACITY_100 = 'FF',
 }
 
-export enum ToastGroup {
-  DELETE_PROCESSING = 'delete-processing',
-  MESSAGE = 'message',
-}
-
 // Store
 export const defaultStoreState: StoreState = {
   app: {
-    activePopup: null,
+    popup: null,
+    notification: null,
     settings: null,
     assets: {
       colors: [],
@@ -102,9 +113,10 @@ export const defaultStoreState: StoreState = {
 };
 
 export enum StoreMutation {
-  SET_ACTIVE_POPUP = 'set-active-popup',
+  SET_POPUP = 'set-popup',
+  SET_NOTIFICATION = 'set-notification',
+  SET_SETTINGS = 'set-settings',
   ADD_ASSETS = 'add-assets',
   ADD_PROJECTS = 'add-projects',
   SET_ACTIVE_PROJECT = 'set-active-project',
-  SET_SETTINGS = 'set-settings',
 }
