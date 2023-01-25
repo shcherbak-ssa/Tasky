@@ -2,7 +2,9 @@ package com.tasky.server.models;
 
 import java.time.LocalDateTime;
 
+import com.tasky.server.shared.annotations.EqualTo;
 import com.tasky.server.shared.constants.SettingsConstants;
+import com.tasky.server.shared.validations.ValidationGroups.ToUpdate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,19 +12,25 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = SettingsConstants.DATABASE_TABLE_NAME)
 public class Settings {
-  
+
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
   @Column
+  @EqualTo(
+    messagePrefix = "Projects view setting",
+    values = { SettingsConstants.PROJECTS_VIEW_LIST, SettingsConstants.PROJECTS_VIEW_TILES }
+  )
   private String projectsView;
 
   @Column
+  @NotNull(message = "Cannot be empty", groups = ToUpdate.class)
   private LocalDateTime updatedAt;
 
   public Settings() {}
@@ -61,7 +69,7 @@ public class Settings {
 
     updatedSettings.setId(this.id);
     updatedSettings.setUpdatedAt(settingsUpdates.updatedAt);
-    
+
     updatedSettings.setProjectsView(settingsUpdates.projectsView == null ? this.projectsView : settingsUpdates.projectsView);
 
     return updatedSettings;

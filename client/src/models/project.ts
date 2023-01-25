@@ -168,10 +168,10 @@ export class Project {
     this.updates = {};
   }
 
-  public getUpdatedProject(): Project {
+  public mergeWithUpdates(updates: ProjectUpdates = this.updates): Project {
     return Project.create({
       ...this.schema,
-      ...this.updates,
+      ...updates,
     });
   }
 

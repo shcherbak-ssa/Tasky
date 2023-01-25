@@ -6,8 +6,8 @@ import { BaseValidator } from './base-validator';
 export class ProjectsValidator extends BaseValidator<ProjectUpdates> {
 
   protected schema: Joi.ObjectSchema<ProjectUpdates> = Joi.object({
-    name: Joi.string().empty(),
-    description: Joi.string(),
+    name: Joi.string().trim().empty(),
+    description: Joi.string().trim(),
     color: Joi.object({
       id: Joi.number(),
       bgColor: Joi.string().length(projectValidationRules.bgColorLength),
@@ -26,6 +26,7 @@ export class ProjectsValidator extends BaseValidator<ProjectUpdates> {
   protected schemaToCreate: Joi.ObjectSchema = this.schema.keys({
     name: this.schema.extract('name').required(),
     color: this.schema.extract('color').required(),
+    icon: this.schema.extract('icon').required(),
     createdAt: this.schema.extract('createdAt').required(),
   });
 

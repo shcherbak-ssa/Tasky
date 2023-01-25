@@ -1,5 +1,6 @@
-import type { ApiRequest } from 'shared/types';
+import type { ApiErrorResponse, ApiRequest } from 'shared/types';
 import { apiHeaders, ApiMethod, ApiEndpoint, ApiResponseCode, QUERY_URL_SEPARATOR } from 'shared/constants';
+import { ValidationError } from 'shared/errors';
 
 export class BaseApi {
 
@@ -37,16 +38,22 @@ export class BaseApi {
       body: BaseApi.isGetMethod(method) ? null : JSON.stringify(body || {}),
     });
 
-    if (!response.ok) {
-      // @TODO: add error
-      throw new Error(`${response.status} : ${response.statusText}`);
-    }
-    
-    if (BaseApi.isNoContentCode(response.status)) {
-      return {} as R;
+    if (response.ok) {
+      if (BaseApi.isNoContentCode(response.status)) {
+        return {} as R;
+      }
+
+      return await response.json() as R;
     }
 
-    return await response.json() as R;
+    if (response.status === ApiResponseCode.BAD_REQUEST) {
+      const { errors } = await response.json() as ApiErrorResponse<B>;
+
+      throw new ValidationError(errors);
+    }
+
+    // @TODO: add error
+    throw new Error(`${response.status} : ${response.statusText}`);
   }
 
   private static setParamsToUrl<P extends object>(endpoint: ApiEndpoint, params: P): string {

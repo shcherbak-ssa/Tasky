@@ -50,8 +50,6 @@ const toast = useToast();
 watch(
   () => store.state.app.notification,
   (newNotificatoin, oldNotification) => {
-    console.log(newNotificatoin, oldNotification);
-    
     if (newNotificatoin) {
       const { type, heading, message, group, life } = newNotificatoin;
 

@@ -12,7 +12,7 @@ import com.tasky.server.shared.exceptions.ResourceNotFoundException;
 
 @Service
 public class ProjectsService {
-  
+
   @Autowired
   private ProjectsDatabase database;
 

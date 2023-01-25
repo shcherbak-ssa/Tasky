@@ -2,6 +2,7 @@ package com.tasky.server.controllers.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,8 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.tasky.server.models.Settings;
 import com.tasky.server.services.SettingsService;
 import com.tasky.server.shared.constants.ApiEndpoints;
+import com.tasky.server.shared.validations.ValidationGroups.ToUpdate;
 
 @RestController
+@Validated
 public class SettingsController {
 
   @Autowired
@@ -27,7 +30,7 @@ public class SettingsController {
 
   @PutMapping(path = ApiEndpoints.SETTINGS)
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void updatesSettings(@RequestBody Settings settingsUpdates) {
+  public void updatesSettings(@RequestBody @Validated(ToUpdate.class) Settings settingsUpdates) {
     this.service.updateSettings(settingsUpdates);
   }
 

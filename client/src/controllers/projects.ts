@@ -138,19 +138,19 @@ export class ProjectController
   }
 
   private async createProject(project: Project): Promise<void> {
-    const projectUpdates: ProjectUpdates = project.getUpdates();
-    this.validator.validateToCreate(projectUpdates);
+    let projectUpdates: ProjectUpdates = project.getUpdates();
+    projectUpdates = this.validator.validateToCreate(projectUpdates);
 
     const createdProject: Project = await this.api.createProject(projectUpdates);
     this.storage.addProject(createdProject);
   }
 
   private async updateProject(project: Project): Promise<void> {
-    const projectUpdates: ProjectUpdates = project.getUpdates();
-    this.validator.validateToUpdate(projectUpdates);
+    let projectUpdates: ProjectUpdates = project.getUpdates();
+    projectUpdates = this.validator.validateToUpdate(projectUpdates);
 
     await this.api.updateProject(project.id, projectUpdates);
-    this.storage.updateProject(project.getUpdatedProject());
+    this.storage.updateProject(project.mergeWithUpdates(projectUpdates));
   }
 
 }

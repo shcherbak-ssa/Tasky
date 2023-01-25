@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.tasky.server.shared.constants.ProjectsConstants;
+import com.tasky.server.shared.validations.ValidationGroups.ToCreate;
+import com.tasky.server.shared.validations.ValidationGroups.ToUpdate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,6 +14,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = ProjectsConstants.DATABASE_TABLE_NAME)
@@ -22,24 +27,32 @@ public class Project {
   private Long id;
 
   @Column
+  @NotNull(message = "\"name\" is required", groups = ToCreate.class)
+  @Size(min = 1, message = "\"name\" is required", groups = ToUpdate.class)
   private String name;
 
   @Column
   private String description;
 
   @ManyToOne
+  @NotNull(message = "\"color\" is required", groups = ToCreate.class)
   private AssetsColor color;
 
   @ManyToOne
+  @NotNull(message = "\"icon\" is required", groups = ToCreate.class)
   private AssetsProjectIcon icon;
 
   @Column
   private LocalDate dueDate;
 
   @Column
+  @Null(message = "Must be empty", groups = ToUpdate.class)
+  @NotNull(message = "Cannot be empty", groups = ToCreate.class)
   private LocalDateTime createdAt;
 
   @Column
+  @Null(message = "Must be empty", groups = ToCreate.class)
+  @NotNull(message = "Cannot be empty", groups = ToUpdate.class)
   private LocalDateTime updatedAt;
 
   Project() {}
@@ -68,7 +81,7 @@ public class Project {
   }
 
   public void setName(String name) {
-    this.name = name;
+    this.name = name.trim();
   }
 
   public String getDescription() {
@@ -76,7 +89,7 @@ public class Project {
   }
 
   public void setDescription(String description) {
-    this.description = description;
+    this.description = description.trim();
   }
 
   public AssetsColor getColor() {

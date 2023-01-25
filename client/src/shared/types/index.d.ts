@@ -13,6 +13,11 @@ export type ErrorObject<T> = {
   [key in keyof T]?: string;
 }
 
+export type ApiErrorResponse<T> = {
+  message: string;
+  errors: ErrorObject<T>;
+}
+
 export type ApiRequest<P, Q, B> = {
   endpoint: ApiEndpoint;
   params?: P;
@@ -26,8 +31,8 @@ export type StoreState = {
 }
 
 export interface Validator<T> {
-  validateToCreate(object: T): void;
-  validateToUpdate(object: T): void;
+  validateToCreate(object: T): T;
+  validateToUpdate(object: T): T;
 }
 
 export type ControllerList = {

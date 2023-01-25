@@ -1,6 +1,7 @@
 import Joi from 'joi';
 import type { ErrorObject, Validator } from 'shared/types';
 import { ValidationError } from 'shared/errors';
+import { cloneObject } from 'shared/utils';
 
 export class BaseValidator<T> implements Validator<T> {
 
@@ -10,25 +11,31 @@ export class BaseValidator<T> implements Validator<T> {
 
   protected constructor() {}
 
-  public validateToCreate(projectUpdates: T): void {
-    const { error } = this.schemaToCreate.validate(projectUpdates);
+  public validateToCreate(updates: T): T {
+    const { error, value } = this.schemaToCreate.validate(updates);
 
     if (error) {
       this.throwValidationError(error);
     }
+
+    return cloneObject(value);
   }
 
-  public validateToUpdate(projectUpdates: T): void {
-    const { error } = this.schemaToUpdate.validate(projectUpdates);
+  public validateToUpdate(updates: T): T {
+    const { error, value } = this.schemaToUpdate.validate(updates);
 
     if (error) {
       this.throwValidationError(error);
     }
+
+    return cloneObject(value);
   }
 
   private throwValidationError(error: Joi.ValidationError): void {
     const errors = Object.fromEntries(
-      error.details.map(({ message, context }) => [ context?.key as keyof T, message ])
+      error.details.map(({ message, context }) => {
+        return [ context?.key as keyof T, message ];
+      })
     ) as ErrorObject<T>;
 
     throw new ValidationError<T>(errors);
