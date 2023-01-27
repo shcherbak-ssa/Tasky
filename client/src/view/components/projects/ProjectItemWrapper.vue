@@ -18,7 +18,7 @@
       >
         <slot name="content" />
       </div>
-    
+
       <div
         class="menu duration-200 p-1 z-10"
         :class="{ 'absolute bottom-1 right-1/2 translate-x-1/2': !props.isListView }"
@@ -30,13 +30,13 @@
 </template>
 
 <script setup lang="ts">
-type ComponentProps = {
+type Props = {
   isListView: boolean;
   isActive?: boolean;
 }
 
 // Properties
-const props = defineProps<ComponentProps>();
+const props = defineProps<Props>();
 const emits = defineEmits(['item-click']);
 </script>
 

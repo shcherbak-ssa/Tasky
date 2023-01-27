@@ -50,7 +50,7 @@ export enum ApiResponseCode {
 export const NOTIFICATION_LIFE: number = 5000;
 
 export enum NotificationGroup {
-  DELETE_PROCESSING = 'delete-processing',
+  PROCESS = 'process',
   MESSAGE = 'message',
 }
 

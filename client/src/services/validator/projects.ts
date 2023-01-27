@@ -18,7 +18,15 @@ export class ProjectsValidator extends BaseValidator<ProjectUpdates> {
       family: Joi.string().max(projectValidationRules.iconGroupLength),
       name: Joi.string().max(projectValidationRules.iconNameLength),
     }),
-    dueDate: Joi.date().empty(null),
+    hasDueDate: Joi.boolean(),
+    dueDate: Joi.date().empty(null)
+      .when('hasDueDate', {
+        is: Joi.boolean().exist().valid(true),
+        then: Joi.date().required(),
+        otherwise: Joi.date().empty(null),
+      }),
+    isArchived: Joi.boolean(),
+    archivedAt: Joi.date().empty(null),
     createdAt: Joi.date().empty(null),
     updatedAt: Joi.date().empty(null),
   });

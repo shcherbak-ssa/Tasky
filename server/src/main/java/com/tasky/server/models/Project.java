@@ -43,7 +43,16 @@ public class Project {
   private AssetsProjectIcon icon;
 
   @Column
+  private Boolean hasDueDate;
+
+  @Column
   private LocalDate dueDate;
+
+  @Column
+  private Boolean isArchived;
+
+  @Column
+  private LocalDateTime archivedAt;
 
   @Column
   @Null(message = "Must be empty", groups = ToUpdate.class)
@@ -57,13 +66,26 @@ public class Project {
 
   Project() {}
 
-  Project(String name, String description, AssetsColor color, AssetsProjectIcon icon,
-    LocalDate dueDate, LocalDateTime createdAt, LocalDateTime updatedAt) {
+  public Project(
+    String name,
+    String description,
+    AssetsColor color,
+    AssetsProjectIcon icon,
+    Boolean hasDueDate,
+    LocalDate dueDate,
+    Boolean isArchived,
+    LocalDateTime archivedAt,
+    LocalDateTime createdAt,
+    LocalDateTime updatedAt
+  ) {
     this.name = name;
     this.description = description;
     this.color = color;
     this.icon = icon;
+    this.hasDueDate = hasDueDate;
     this.dueDate = dueDate;
+    this.isArchived = isArchived;
+    this.archivedAt = archivedAt;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }
@@ -89,7 +111,11 @@ public class Project {
   }
 
   public void setDescription(String description) {
-    this.description = description.trim();
+    if (description != null) {
+      description = description.trim();
+    }
+
+    this.description = description;
   }
 
   public AssetsColor getColor() {
@@ -112,8 +138,32 @@ public class Project {
     return dueDate;
   }
 
+  public Boolean getHasDueDate() {
+    return this.hasDueDate;
+  }
+
+  public void setHasDueDate(Boolean hasDueDate) {
+    this.hasDueDate = hasDueDate;
+  }
+
   public void setDueDate(LocalDate dueDate) {
     this.dueDate = dueDate;
+  }
+
+  public Boolean getIsArchived() {
+    return this.isArchived;
+  }
+
+  public void setIsArchived(Boolean isArchived) {
+    this.isArchived = isArchived;
+  }
+
+  public LocalDateTime getArchivedAt() {
+    return this.archivedAt;
+  }
+
+  public void setArchivedAt(LocalDateTime archivedAt) {
+    this.archivedAt = archivedAt;
   }
 
   public LocalDateTime getCreatedAt() {
@@ -132,18 +182,27 @@ public class Project {
     this.updatedAt = updatedAt;
   }
 
-  public Project mergeWithUpdates(Project projectUpdates) {
+  public Project mergeWithUpdates(Project updates) {
     Project updatedProject = new Project();
 
     updatedProject.setId(this.id);
     updatedProject.setCreatedAt(this.createdAt);
-    updatedProject.setUpdatedAt(projectUpdates.updatedAt);
+    updatedProject.setUpdatedAt(updates.updatedAt);
 
-    updatedProject.setName(projectUpdates.name == null ? this.name : projectUpdates.name);
-    updatedProject.setDescription(projectUpdates.description == null ? this.description : projectUpdates.description);
-    updatedProject.setColor(projectUpdates.color == null ? this.color : projectUpdates.color);
-    updatedProject.setIcon(projectUpdates.icon == null ? this.icon : projectUpdates.icon);
-    updatedProject.setDueDate(projectUpdates.dueDate == null ? this.dueDate : projectUpdates.dueDate);
+    updatedProject.setName(updates.name == null ? this.name : updates.name);
+    updatedProject.setDescription(updates.description == null ? this.description : updates.description);
+    updatedProject.setColor(updates.color == null ? this.color : updates.color);
+    updatedProject.setIcon(updates.icon == null ? this.icon : updates.icon);
+    updatedProject.setHasDueDate(updates.hasDueDate == null ? this.hasDueDate : updates.hasDueDate);
+    updatedProject.setIsArchived(updates.isArchived == null ? this.isArchived : updates.isArchived);
+
+    if (updates.hasDueDate != null) {
+      updatedProject.setDueDate(updates.hasDueDate ? updates.dueDate : null);
+    }
+
+    if (updates.isArchived != null) {
+      updatedProject.setArchivedAt(updates.isArchived ? updates.archivedAt : null);
+    }
 
     return updatedProject;
   }
@@ -151,7 +210,8 @@ public class Project {
   @Override
   public String toString() {
     return "Project [id=" + id + ", name=" + name + ", description=" + description + ", color=" + color + ", icon="
-        + icon + ", dueDate=" + dueDate + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
+        + icon + ", hasDueDate=" + hasDueDate + ", dueDate=" + dueDate + ", isArchived=" + isArchived + ", archivedAt="
+        + archivedAt + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
   }
 
 }

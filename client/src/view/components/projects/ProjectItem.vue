@@ -6,7 +6,7 @@
         :size="props.isListView ? 'normal' : 'big'"
         :project="props.project"
       />
-  
+
       <div
         class="name text-sm font-semibold select-none"
         :class="{
@@ -17,7 +17,7 @@
         {{ props.project.name }}
       </div>
     </template>
-    
+
     <template #menu>
       <BaseButton
         class="p-button-sm p-button-text p-button-rounded"
@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import type { MenuItem } from 'primevue/menuitem';
 import type { Project } from 'models/project';
 
@@ -56,29 +56,43 @@ type State = {
 
 // Properties
 const props = defineProps<Props>();
-const emits = defineEmits(['update-project', 'delete-project']);
+const emits = defineEmits(['update-project', 'archive-project', 'restore-project', 'delete-project']);
 const state = reactive<State>({
   isActive: false,
 });
 
 const menu = ref(null);
 
-const menuItems: MenuItem[] = [
-  {
-    label: 'Edit',
-    icon: 'pi pi-pencil',
-    command: () => {
-      emits('update-project');
+const menuItems = computed<MenuItem[]>(() => {
+  return [
+    {
+      label: 'Edit',
+      icon: 'pi pi-pencil',
+      command: () => {
+        emits('update-project');
+      },
     },
-  },
-  {
-    label: 'Delete',
-    icon: 'pi pi-trash',
-    command: () => {
-      emits('delete-project');
+    {
+      label: (props.project.isArchived ? 'Restore' : 'Archive'),
+      icon: (props.project.isArchived ? 'pi pi-replay' : 'pi pi-briefcase'),
+      command: () => {
+        if (props.project.isArchived) {
+          emits('restore-project');
+          return;
+        }
+
+        emits('archive-project');
+      },
     },
-  },
-];
+    {
+      label: 'Delete',
+      icon: 'pi pi-trash',
+      command: () => {
+        emits('delete-project');
+      },
+    },
+  ];
+});
 
 // Methods
 function toggleMenu(e: Event): void {

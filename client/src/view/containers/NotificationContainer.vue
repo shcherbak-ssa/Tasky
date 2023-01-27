@@ -1,5 +1,5 @@
 <template>
-  <PrimevueToast position="bottom-left" :group="NotificationGroup.DELETE_PROCESSING">
+  <PrimevueToast position="bottom-left" :group="NotificationGroup.PROCESS">
     <template #message="slotProps">
       <div class="mr-4">
         <BaseIcon icon="pi-spin pi-spinner" style="font-size: 2rem" />
@@ -7,12 +7,6 @@
 
       <div class="mr-auto">
         <div v-html="`${slotProps.message.summary}...`" class="mb-4" />
-
-        <BaseButton
-          label="Undo"
-          class="p-button-sm"
-          :class="{ [`p-button-${slotProps.message.severity}`]: true }"
-        />
       </div>
     </template>
   </PrimevueToast>

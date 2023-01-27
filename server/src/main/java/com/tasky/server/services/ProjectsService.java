@@ -34,16 +34,12 @@ public class ProjectsService {
     return this.database.save(newProject);
   }
 
-  public void updateProject(Project projectUpdates, boolean hasDueDate) throws ResourceNotFoundException {
+  public void updateProject(Project projectUpdates) throws ResourceNotFoundException {
     Optional<Project> projectFromDB = this.database.findById(projectUpdates.getId());
 
     if (projectFromDB.isPresent()) {
       Project projectToUpdate = projectFromDB.get();
       Project updatedProject = projectToUpdate.mergeWithUpdates(projectUpdates);
-
-      if (hasDueDate) {
-        updatedProject.setDueDate(projectUpdates.getDueDate());
-      }
 
       this.database.save(updatedProject);
 

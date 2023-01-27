@@ -8,7 +8,10 @@ class ProjectSchemaDefault implements ProjectSchema {
   public description: string;
   public color: AssetsColor;
   public icon: AssetsProjectIcon;
+  public hasDueDate: boolean;
   public dueDate: Date | null;
+  public isArchived: boolean;
+  public archivedAt: Date | null;
   public createdAt: Date | null;
   public updatedAt: Date | null;
 
@@ -18,7 +21,10 @@ class ProjectSchemaDefault implements ProjectSchema {
     this.description = schema?.description || EMPTY_STRING;
     this.color = schema?.color || { id: ZERO, bgColor: EMPTY_STRING, textColor: EMPTY_STRING };
     this.icon = schema?.icon || { id: ZERO, family: EMPTY_STRING, name: EMPTY_STRING };
+    this.hasDueDate = schema?.hasDueDate || false;
     this.dueDate = schema?.dueDate ? getProjectDueDate(new Date(schema.dueDate)) : null;
+    this.isArchived = schema?.isArchived || false;
+    this.archivedAt = schema?.archivedAt ? new Date(schema.archivedAt) : null;
     this.createdAt = schema?.createdAt ? new Date(schema.createdAt) : null;
     this.updatedAt = schema?.updatedAt ? new Date(schema.updatedAt) : null;
   }
@@ -114,6 +120,23 @@ export class Project {
     this.updates.icon = { ...icon };
   }
 
+  public get hasDueDate(): boolean {
+    if (this.updates.hasDueDate !== undefined) {
+      return this.updates.hasDueDate;
+    }
+
+    return this.schema.hasDueDate;
+  }
+
+  private set hasDueDate(newState: boolean) {
+    if (this.schema.hasDueDate === newState) {
+      delete this.updates.hasDueDate;
+      return;
+    }
+
+    this.updates.hasDueDate = newState;
+  }
+
   public get dueDate(): Date | null {
     if (this.updates.dueDate !== undefined) {
       return this.updates.dueDate;
@@ -135,7 +158,20 @@ export class Project {
       }
     }
 
+    this.hasDueDate = !!date;
     this.updates.dueDate = date;
+  }
+
+  public get isArchived(): boolean {
+    if (this.updates.isArchived !== undefined) {
+      return this.updates.isArchived;
+    }
+
+    return this.schema.isArchived;
+  }
+
+  public get archivedAt(): Date | null {
+    return this.schema.archivedAt;
   }
 
   public get createdAt(): Date | null {
@@ -144,6 +180,16 @@ export class Project {
 
   public get updatedAt(): Date | null {
     return this.schema.updatedAt;
+  }
+
+  public archive(): void {
+    this.updates.isArchived = true;
+    this.updates.archivedAt = new Date();
+  }
+
+  public restore(): void {
+    this.updates.isArchived = false;
+    this.updates.archivedAt = null;
   }
 
   public isNewProject(): boolean {
@@ -168,9 +214,10 @@ export class Project {
     this.updates = {};
   }
 
-  public mergeWithUpdates(updates: ProjectUpdates = this.updates): Project {
+  public mergeWithUpdates(updates: ProjectUpdates): Project {
     return Project.create({
       ...this.schema,
+      ...this.updates,
       ...updates,
     });
   }

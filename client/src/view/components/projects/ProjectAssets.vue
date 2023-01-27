@@ -69,14 +69,14 @@ import ProjectIcon from 'view/components/projects/ProjectIcon.vue';
 import ColorList from 'view/components/ColorList.vue';
 import { HEXColorOpacity } from 'shared/constants';
 
-type ComponentProps = {
+type Props = {
   project: Project;
   mode: 'show' | 'edit';
   size: 'small' | 'normal' | 'big';
 }
 
 // Properties
-const props = defineProps<ComponentProps>();
+const props = defineProps<Props>();
 const emits = defineEmits(['color-selected', 'icon-selected']);
 
 const assetsPanel = ref(null);

@@ -22,7 +22,7 @@ export interface AppController {
   openPopup(popup: Popup): void;
   closePopup(): void;
   showNotification(notification: AppNotification): void;
-  removeNotification(): void;
+  removeNotification(): Promise<void>;
 }
 
 export interface AppApi {}

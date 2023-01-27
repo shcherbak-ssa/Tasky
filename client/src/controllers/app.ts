@@ -61,7 +61,7 @@ export class AppController extends BaseController<AppApi, AppStorage, {}> implem
   }
 
   public showNotification(notification: AppNotification): void {
-    if (notification.group !== NotificationGroup.DELETE_PROCESSING) {
+    if (notification.group !== NotificationGroup.PROCESS) {
       notification.life = NOTIFICATION_LIFE;
       notification.group = NotificationGroup.MESSAGE;
     }
@@ -69,8 +69,13 @@ export class AppController extends BaseController<AppApi, AppStorage, {}> implem
     this.storage.setNotification(notification);
   }
 
-  public removeNotification(): void {
-    this.storage.removeNotification();
+  public async removeNotification(): Promise<void> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        this.storage.removeNotification();
+        resolve();
+      });
+    });
   }
 
 }

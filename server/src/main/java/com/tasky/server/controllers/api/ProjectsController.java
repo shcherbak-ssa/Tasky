@@ -11,13 +11,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tasky.server.models.Project;
 import com.tasky.server.services.ProjectsService;
-import com.tasky.server.shared.annotations.EqualTo;
 import com.tasky.server.shared.constants.ApiEndpoints;
 import com.tasky.server.shared.validations.ValidationGroups.ToCreate;
 import com.tasky.server.shared.validations.ValidationGroups.ToUpdate;
@@ -49,17 +47,13 @@ public class ProjectsController {
 
   @PutMapping(path = ApiEndpoints.PROJECTS_ID)
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void updateProject(@PathVariable Long id,
-    @RequestParam(name = "hasDueDate", defaultValue = "false")
-    @EqualTo(messagePrefix = "Parameter 'hasDueDate'", values = {"true", "false"})
-      String hasDueDate,
-    @RequestBody
-    @Validated(ToUpdate.class)
-      Project projectUpdates
+  public void updateProject(
+    @PathVariable Long id,
+    @RequestBody @Validated(ToUpdate.class) Project projectUpdates
   ) {
     projectUpdates.setId(id);
 
-    this.service.updateProject(projectUpdates, Boolean.parseBoolean(hasDueDate));
+    this.service.updateProject(projectUpdates);
   }
 
   @DeleteMapping(path = ApiEndpoints.PROJECTS_ID)

@@ -16,13 +16,13 @@
 <script setup lang="ts">
 import PrimevueCalendar from 'primevue/calendar';
 
-type ComponentProps = {
+type Props = {
   value: Date | null;
   placeholder: string;
 }
 
 // Properties
-const props = defineProps<ComponentProps>();
+const props = defineProps<Props>();
 const emits = defineEmits(['date-select']);
 
 </script>

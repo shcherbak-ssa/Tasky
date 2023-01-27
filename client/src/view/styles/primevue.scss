@@ -31,7 +31,7 @@
       box-shadow: none;
       border-color: var(--text-color-secondary);
     }
-  
+
     &:enabled:hover {
       border-color: var(--text-color-secondary);
     }
@@ -90,8 +90,10 @@
 }
 
 .p-dialog {
+  min-width: 320px;
+
   & &-content {
-    @apply border-t-2 border-gray-200 pt-6;
+    @apply border-t-2 border-gray-200 p-6;
   }
 
   &.p-confirm-dialog .p-confirm-dialog-message {

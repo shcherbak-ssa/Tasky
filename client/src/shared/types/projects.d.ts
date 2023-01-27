@@ -12,7 +12,10 @@ export type ProjectSchema = {
   description: string;
   color: AssetsColor;
   icon: AssetsProjectIcon;
+  hasDueDate: boolean;
   dueDate: Date | null;
+  isArchived: boolean;
+  archivedAt: Date | null;
   createdAt: Date | null;
   updatedAt: Date | null;
 }
@@ -27,6 +30,8 @@ export interface ProjectsController {
   removeActiveProject(): void
   loadProjects(): Promise<boolean>;
   saveProject(project: Project): Promise<ErrorObject<ProjectUpdates> | null>;
+  archiveProject(project: Project): Promise<boolean>;
+  restoreProject(project: Project): Promise<boolean>;
   deleteProject(project: Project): Promise<boolean>;
 }
 

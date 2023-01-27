@@ -15,13 +15,13 @@ import type { AssetsColor } from 'shared/types';
 
 import ColorItem from 'view/components/ColorItem.vue';
 
-type ComponentProps = {
+type Props = {
   colors: AssetsColor[];
   selectedColorId: number;
 }
 
 // Properties
-const props = defineProps<ComponentProps>();
+const props = defineProps<Props>();
 const emits = defineEmits(['color-selected']);
 </script>
 

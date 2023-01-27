@@ -89,7 +89,7 @@ export class ProjectController
       appController.showNotification({
         type: NotificationType.SUCCESS,
         heading: isNewProject ? 'Created' : 'Updated',
-        message: `Project <strong>${project.name}</strong> ${isNewProject ? 'created' : 'updated'} successfully`,
+        message: `Project <strong>${project.name}</strong> is ${isNewProject ? 'created' : 'updated'} successfully`,
       });
 
       return null;
@@ -106,6 +106,79 @@ export class ProjectController
     }
   }
 
+  public async archiveProject(projectToArchive: Project): Promise<boolean> {
+    const appController: AppController = ProjectController.controllers[Controller.APP];
+
+    try {
+      appController.showNotification({
+        type: NotificationType.INFO,
+        heading: EMPTY_STRING,
+        message: `Archiving <strong>${projectToArchive.name}</strong> project`,
+        group: NotificationGroup.PROCESS,
+      });
+
+      projectToArchive.archive();
+
+      await this.updateProject(projectToArchive);
+
+      await appController.removeNotification();
+
+      appController.showNotification({
+        type: NotificationType.SUCCESS,
+        heading: 'Archived',
+        message: `Project <strong>${projectToArchive.name}</strong> is archived successfully`,
+      });
+
+      return true;
+    } catch (e: any) {
+      if (e.name === ErrorName.VALIDATION_ERROR) {
+        appController.showNotification(e.notification);
+
+        return e.errors;
+      }
+
+      console.log(e); // @TODO: add error
+
+      return false;
+    }
+  }
+
+  public async restoreProject(projectToRestore: Project): Promise<boolean> {
+    const appController: AppController = ProjectController.controllers[Controller.APP];
+
+    try {
+      appController.showNotification({
+        type: NotificationType.INFO,
+        heading: EMPTY_STRING,
+        message: `Restoring <strong>${projectToRestore.name}</strong> project`,
+        group: NotificationGroup.PROCESS,
+      });
+
+      projectToRestore.restore();
+      await this.updateProject(projectToRestore);
+
+      await appController.removeNotification();
+
+      appController.showNotification({
+        type: NotificationType.SUCCESS,
+        heading: 'Restored',
+        message: `Project <strong>${projectToRestore.name}</strong> is restored successfully`,
+      });
+
+      return true;
+    } catch (e: any) {
+      if (e.name === ErrorName.VALIDATION_ERROR) {
+        appController.showNotification(e.notification);
+
+        return e.errors;
+      }
+
+      console.log(e); // @TODO: add error
+
+      return false;
+    }
+  }
+
   public async deleteProject({ id, name: projectName }: Project): Promise<boolean> {
     const appController: AppController = ProjectController.controllers[Controller.APP];
 
@@ -114,20 +187,18 @@ export class ProjectController
         type: NotificationType.INFO,
         heading: EMPTY_STRING,
         message: `Deleting <strong>${projectName}</strong> project`,
-        group: NotificationGroup.DELETE_PROCESSING,
+        group: NotificationGroup.PROCESS,
       });
 
       await this.api.deleteProject(id);
       this.storage.removeProject(id);
 
-      appController.removeNotification();
+      await appController.removeNotification();
 
-      setTimeout(() => {
-        appController.showNotification({
-          type: NotificationType.SUCCESS,
-          heading: 'Deleted',
-          message: `Project <strong>${projectName}</strong> deleted successfully`,
-        });
+      appController.showNotification({
+        type: NotificationType.SUCCESS,
+        heading: 'Deleted',
+        message: `Project <strong>${projectName}</strong> is deleted successfully`,
       });
 
       return true;

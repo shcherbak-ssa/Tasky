@@ -1,9 +1,11 @@
 <template>
   <ContentWrapper type="simple">
-    <div class="border-b-2 flex items-center justify-between py-2">
-      <h3>Projects</h3>
-
-      <div>
+    <ContentSection
+      :tabs="sectionTabs"
+      :active-tab-key="state.activeTabKey"
+      @select-tab="selectSectionTab"
+    >
+      <template #rightSide>
         <BaseButton
           class="p-button-sm p-button-text p-button-rounded"
           :icon="`pi ${activeProjectsViewIcon}`"
@@ -15,26 +17,29 @@
           :model="projectsViewMenuItems"
           :popup="true"
         />
-      </div>
-    </div>
+      </template>
+    </ContentSection>
 
     <ProjectListWrapper v-if="state.isProjectsLoaded" :view="settings.projectsView">
-      <ProjectItemAdd
-        :isListView="isListProjectsView"
-        @item-click="createProject"
-      />
+      <TransitionGroup name="list">
+        <ProjectItemAdd
+          v-if="state.activeTabKey === TabKey.PROJECT"
+          :isListView="isListProjectsView"
+          @item-click="createProject"
+        />
 
-      <template v-if="projects.length">
         <template v-for="project in projects" :key="project.id">
           <ProjectItem
             v-if="project.id !== state.deletingProjectId"
             :project="project"
             :is-list-view="isListProjectsView"
             @update-project="updateProject(project.id)"
+            @archive-project="archiveProject(project)"
+            @restore-project="restoreProject(project)"
             @delete-project="deleteProject(project)"
           />
         </template>
-      </template>
+      </TransitionGroup>
     </ProjectListWrapper>
 
     <ProjectListWrapper v-else :view="settings.projectsView">
@@ -64,14 +69,22 @@ import ProjectListWrapper from 'view/components/projects/ProjectListWrapper.vue'
 import ContentWrapper from 'view/components/ContentWrapper.vue';
 import ProjectItemAdd from 'view/components/projects/ProjectItemAdd.vue';
 import ProjectItemSkeleton from 'view/components/projects/ProjectItemSkeleton.vue';
+import ContentSection from 'view/components/ContentSection.vue';
+
+enum TabKey {
+  PROJECT = 'project',
+  ARCHIVE = 'archive',
+}
 
 type State = {
+  activeTabKey: TabKey;
   isProjectsLoaded: boolean;
   deletingProjectId: number;
 }
 
 // Properties
 const state = reactive<State>({
+  activeTabKey: TabKey.PROJECT,
   isProjectsLoaded: false,
   deletingProjectId: ZERO,
 });
@@ -86,7 +99,12 @@ const projectsController: ProjectsController = useController(Controller.PROJECTS
 const settingsController: SettingsController = useController(Controller.SETTINGS);
 
 const projects = computed<Project[]>(() => {
-  return store.state.projects.list;
+  return store.state.projects.list
+    .filter(({ isArchived }) => {
+      return state.activeTabKey === TabKey.PROJECT
+        ? !isArchived
+        : isArchived;
+    });
 });
 
 const settings = computed<Settings>(() => {
@@ -122,6 +140,19 @@ const projectsViewMenuItems = computed<MenuItem[]>(() => {
   ];
 });
 
+const sectionTabs = computed<{ label: string; key: string; }[]>(() => {
+  return [
+    {
+      label: 'Projects',
+      key: TabKey.PROJECT,
+    },
+    {
+      label: 'Archive',
+      key: TabKey.ARCHIVE,
+    },
+  ];
+});
+
 // Hooks
 onMounted(async () => {
   const success: boolean = await projectsController.loadProjects();
@@ -132,6 +163,10 @@ onMounted(async () => {
 });
 
 // Methods
+function selectSectionTab(tabKey: TabKey): void {
+  state.activeTabKey = tabKey;
+}
+
 async function updateProjectsViewSettings(newView: ProjectsView): Promise<void> {
   settings.value.projectsView = newView;
   await settingsController.saveSettings(settings.value);
@@ -152,6 +187,22 @@ function updateProject(projectId: number): void {
   openEditProjectPopup(projectId);
 }
 
+function archiveProject(project: Project): void {
+  confirm.require({
+    header: 'Archive project',
+    message: 'Are you sure?',
+    acceptClass: 'p-button-danger',
+    defaultFocus: 'reject',
+    accept: () => {
+      projectsController.archiveProject(project);
+    },
+  });
+}
+
+function restoreProject(project: Project): void {
+  projectsController.restoreProject(project);
+}
+
 function deleteProject(project: Project): void {
   confirm.require({
     header: 'Delete project',
@@ -170,4 +221,16 @@ function deleteProject(project: Project): void {
 }
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.list-enter-active,
+.list-leave-active {
+  opacity: 0;
+  transition: .4s ease;
+}
+
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+</style>
