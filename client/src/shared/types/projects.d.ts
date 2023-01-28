@@ -18,6 +18,7 @@ export type ProjectSchema = {
   archivedAt: Date | null;
   createdAt: Date | null;
   updatedAt: Date | null;
+  isDeleted: boolean;
 }
 
 export type ProjectUpdates = Partial<Omit<ProjectSchema, 'id'>>;

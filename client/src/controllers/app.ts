@@ -61,10 +61,8 @@ export class AppController extends BaseController<AppApi, AppStorage, {}> implem
   }
 
   public showNotification(notification: AppNotification): void {
-    if (notification.group !== NotificationGroup.PROCESS) {
-      notification.life = NOTIFICATION_LIFE;
-      notification.group = NotificationGroup.MESSAGE;
-    }
+    notification.life = notification.life || NOTIFICATION_LIFE;
+    notification.group = notification.group || NotificationGroup.MESSAGE;
 
     this.storage.setNotification(notification);
   }

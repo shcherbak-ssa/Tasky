@@ -100,7 +100,11 @@ const settingsController: SettingsController = useController(Controller.SETTINGS
 
 const projects = computed<Project[]>(() => {
   return store.state.projects.list
-    .filter(({ isArchived }) => {
+    .filter(({ isArchived, isDeleted }) => {
+      if (isDeleted) {
+        return false;
+      }
+      
       return state.activeTabKey === TabKey.PROJECT
         ? !isArchived
         : isArchived;

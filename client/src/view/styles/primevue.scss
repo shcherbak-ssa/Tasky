@@ -44,6 +44,8 @@
 }
 
 .p-button {
+  padding: 0.5rem 1.25rem;
+
   &-icon-only.p-button-rounded.p-button-sm {
     @apply w-8 h-8 p-0;
   }

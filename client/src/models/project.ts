@@ -14,6 +14,7 @@ class ProjectSchemaDefault implements ProjectSchema {
   public archivedAt: Date | null;
   public createdAt: Date | null;
   public updatedAt: Date | null;
+  public isDeleted: boolean;
 
   private constructor(schema?: ProjectSchema) {
     this.id = schema?.id || ZERO;
@@ -27,6 +28,7 @@ class ProjectSchemaDefault implements ProjectSchema {
     this.archivedAt = schema?.archivedAt ? new Date(schema.archivedAt) : null;
     this.createdAt = schema?.createdAt ? new Date(schema.createdAt) : null;
     this.updatedAt = schema?.updatedAt ? new Date(schema.updatedAt) : null;
+    this.isDeleted = schema?.isDeleted || false;
   }
 
   public static create(schema?: ProjectSchema): ProjectSchemaDefault {
@@ -182,12 +184,25 @@ export class Project {
     return this.schema.updatedAt;
   }
 
+  public get isDeleted(): boolean {
+    return this.schema.isDeleted;
+  }
+
   public archive(): void {
     this.updates.isArchived = true;
     this.updates.archivedAt = new Date();
   }
 
+  public delete(): void {
+    this.updates.isDeleted = true;
+  }
+
   public restore(): void {
+    if (this.schema.isDeleted) {
+      this.updates.isDeleted = false;
+      return;
+    }
+
     this.updates.isArchived = false;
     this.updates.archivedAt = null;
   }
@@ -214,7 +229,7 @@ export class Project {
     this.updates = {};
   }
 
-  public mergeWithUpdates(updates: ProjectUpdates): Project {
+  public mergeWithUpdates(updates?: ProjectUpdates): Project {
     return Project.create({
       ...this.schema,
       ...this.updates,

@@ -8,7 +8,15 @@ import type {
   ErrorObject,
   AppController,
 } from 'shared/types';
-import { Controller, EMPTY_STRING, ErrorName, NotificationGroup, NotificationType, ZERO } from 'shared/constants';
+import {
+  Controller,
+  EMPTY_STRING,
+  ErrorName,
+  NotificationGroup,
+  NotificationType,
+  UNDO_NOTIFICATION_LIFE,
+  ZERO,
+} from 'shared/constants';
 import { Project } from 'models/project';
 import { BaseController } from './base-controller';
 
@@ -30,8 +38,7 @@ export class ProjectController
       let projectToActivate: Project;
 
       if (id === ZERO) {
-        const assetsController: AssetsController
-          = ProjectController.controllers[Controller.ASSETS];
+        const assetsController: AssetsController = ProjectController.controllers[Controller.ASSETS];
 
         projectToActivate = Project.create();
         projectToActivate.color = assetsController.getAssets('colors')[0];
@@ -118,7 +125,6 @@ export class ProjectController
       });
 
       projectToArchive.archive();
-
       await this.updateProject(projectToArchive);
 
       await appController.removeNotification();
@@ -155,6 +161,7 @@ export class ProjectController
       });
 
       projectToRestore.restore();
+
       await this.updateProject(projectToRestore);
 
       await appController.removeNotification();
@@ -179,26 +186,46 @@ export class ProjectController
     }
   }
 
-  public async deleteProject({ id, name: projectName }: Project): Promise<boolean> {
+  public async deleteProject(projectToDelete: Project): Promise<boolean> {
     const appController: AppController = ProjectController.controllers[Controller.APP];
 
     try {
       appController.showNotification({
         type: NotificationType.INFO,
         heading: EMPTY_STRING,
-        message: `Deleting <strong>${projectName}</strong> project`,
+        message: `Deleting <strong>${projectToDelete.name}</strong> project`,
         group: NotificationGroup.PROCESS,
       });
 
-      await this.api.deleteProject(id);
-      this.storage.removeProject(id);
+      projectToDelete.delete();
+      await this.updateProject(projectToDelete);
+
+      const undoInterval: number = setTimeout(
+        () => {
+          this.api.deleteProject(projectToDelete.id)
+            .then(() => {
+              this.storage.removeProject(projectToDelete.id);
+            });
+        },
+        UNDO_NOTIFICATION_LIFE,
+      );
 
       await appController.removeNotification();
 
       appController.showNotification({
         type: NotificationType.SUCCESS,
         heading: 'Deleted',
-        message: `Project <strong>${projectName}</strong> is deleted successfully`,
+        message: `Project <strong>${projectToDelete.name}</strong> is deleted successfully`,
+        group: NotificationGroup.UNDO,
+        life: UNDO_NOTIFICATION_LIFE,
+        undo: (): void => {
+          clearInterval(undoInterval);
+
+          const deletedProject: Project = projectToDelete.mergeWithUpdates();
+          deletedProject.restore();
+
+          this.updateProject(deletedProject);
+        },
       });
 
       return true;

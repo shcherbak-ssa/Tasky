@@ -64,6 +64,9 @@ public class Project {
   @NotNull(message = "Cannot be empty", groups = ToUpdate.class)
   private LocalDateTime updatedAt;
 
+  @Column
+  private Boolean isDeleted;
+
   Project() {}
 
   public Project(
@@ -76,7 +79,8 @@ public class Project {
     Boolean isArchived,
     LocalDateTime archivedAt,
     LocalDateTime createdAt,
-    LocalDateTime updatedAt
+    LocalDateTime updatedAt,
+    Boolean isDeleted
   ) {
     this.name = name;
     this.description = description;
@@ -88,6 +92,7 @@ public class Project {
     this.archivedAt = archivedAt;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
+    this.isDeleted = isDeleted;
   }
 
   public Long getId() {
@@ -182,6 +187,14 @@ public class Project {
     this.updatedAt = updatedAt;
   }
 
+  public Boolean getIsDeleted() {
+    return this.isDeleted;
+  }
+
+  public void setIsDeleted(Boolean isDeleted) {
+    this.isDeleted = isDeleted;
+  }
+
   public Project mergeWithUpdates(Project updates) {
     Project updatedProject = new Project();
 
@@ -195,6 +208,7 @@ public class Project {
     updatedProject.setIcon(updates.icon == null ? this.icon : updates.icon);
     updatedProject.setHasDueDate(updates.hasDueDate == null ? this.hasDueDate : updates.hasDueDate);
     updatedProject.setIsArchived(updates.isArchived == null ? this.isArchived : updates.isArchived);
+    updatedProject.setIsDeleted(updates.isDeleted == null ? this.isDeleted : updates.isDeleted);
 
     if (updates.hasDueDate != null) {
       updatedProject.setDueDate(updates.hasDueDate ? updates.dueDate : null);
@@ -211,7 +225,7 @@ public class Project {
   public String toString() {
     return "Project [id=" + id + ", name=" + name + ", description=" + description + ", color=" + color + ", icon="
         + icon + ", hasDueDate=" + hasDueDate + ", dueDate=" + dueDate + ", isArchived=" + isArchived + ", archivedAt="
-        + archivedAt + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
+        + archivedAt + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", isDeleted=" + isDeleted + "]";
   }
 
 }

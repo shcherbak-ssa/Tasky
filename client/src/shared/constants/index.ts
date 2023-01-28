@@ -48,10 +48,12 @@ export enum ApiResponseCode {
 
 // View
 export const NOTIFICATION_LIFE: number = 5000;
+export const UNDO_NOTIFICATION_LIFE: number = 20000;
 
 export enum NotificationGroup {
-  PROCESS = 'process',
   MESSAGE = 'message',
+  PROCESS = 'process',
+  UNDO = 'undo',
 }
 
 export enum NotificationType {

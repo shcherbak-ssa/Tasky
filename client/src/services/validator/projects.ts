@@ -34,6 +34,7 @@ export class ProjectsValidator extends BaseValidator<ProjectUpdates> {
       }),
     createdAt: Joi.date().empty(null),
     updatedAt: Joi.date().empty(null),
+    isDeleted: Joi.boolean(),
   });
 
   protected schemaToCreate: Joi.ObjectSchema = this.schema.keys({

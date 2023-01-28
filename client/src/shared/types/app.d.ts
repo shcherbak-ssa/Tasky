@@ -15,6 +15,7 @@ export type AppNotification = {
   message: string;
   group?: NotificationGroup;
   life?: number;
+  undo?: () => void;
 }
 
 export interface AppController {
