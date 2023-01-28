@@ -26,7 +26,12 @@ export class ProjectsValidator extends BaseValidator<ProjectUpdates> {
         otherwise: Joi.date().empty(null),
       }),
     isArchived: Joi.boolean(),
-    archivedAt: Joi.date().empty(null),
+    archivedAt: Joi.date().empty(null)
+      .when('isArchived', {
+        is: Joi.boolean().exist().valid(true),
+        then: Joi.date().required(),
+        otherwise: Joi.date().empty(null),
+      }),
     createdAt: Joi.date().empty(null),
     updatedAt: Joi.date().empty(null),
   });

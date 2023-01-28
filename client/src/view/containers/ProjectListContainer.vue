@@ -53,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref, watch } from 'vue';
 import type { MenuItem } from 'primevue/menuitem';
 import { useConfirm } from 'primevue/useconfirm';
 
@@ -107,6 +107,10 @@ const projects = computed<Project[]>(() => {
     });
 });
 
+const isThereArchivedProject = computed<boolean>(() => {
+  return !!store.state.projects.list.find(({ isArchived }) => isArchived);
+});
+
 const settings = computed<Settings>(() => {
   return store.getters.getSettings();
 });
@@ -141,16 +145,19 @@ const projectsViewMenuItems = computed<MenuItem[]>(() => {
 });
 
 const sectionTabs = computed<{ label: string; key: string; }[]>(() => {
-  return [
-    {
-      label: 'Projects',
-      key: TabKey.PROJECT,
-    },
-    {
+  const tabs = [{
+    label: 'Projects',
+    key: TabKey.PROJECT,
+  }];
+
+  if (isThereArchivedProject.value) {
+    tabs.push({
       label: 'Archive',
       key: TabKey.ARCHIVE,
-    },
-  ];
+    });
+  }
+
+  return tabs;
 });
 
 // Hooks
@@ -161,6 +168,13 @@ onMounted(async () => {
     state.isProjectsLoaded = true;
   }
 });
+
+watch(
+  () => isThereArchivedProject.value,
+  () => {
+    state.activeTabKey = TabKey.PROJECT;
+  },
+);
 
 // Methods
 function selectSectionTab(tabKey: TabKey): void {
@@ -225,7 +239,7 @@ function deleteProject(project: Project): void {
 .list-enter-active,
 .list-leave-active {
   opacity: 0;
-  transition: .4s ease;
+  transition: .2s ease;
 }
 
 .list-enter-from,
