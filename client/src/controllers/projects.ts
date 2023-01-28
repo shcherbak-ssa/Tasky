@@ -6,8 +6,17 @@ import type {
   AssetsController,
   Validator,
   ErrorObject,
+  AppController,
 } from 'shared/types';
-import { Controller, ErrorName, ZERO } from 'shared/constants';
+import {
+  Controller,
+  EMPTY_STRING,
+  ErrorName,
+  NotificationGroup,
+  NotificationType,
+  UNDO_NOTIFICATION_LIFE,
+  ZERO,
+} from 'shared/constants';
 import { Project } from 'models/project';
 import { BaseController } from './base-controller';
 
@@ -29,8 +38,7 @@ export class ProjectController
       let projectToActivate: Project;
 
       if (id === ZERO) {
-        const assetsController: AssetsController
-          = ProjectController.controllers[Controller.ASSETS];
+        const assetsController: AssetsController = ProjectController.controllers[Controller.ASSETS];
 
         projectToActivate = Project.create();
         projectToActivate.color = assetsController.getAssets('colors')[0];
@@ -75,29 +83,150 @@ export class ProjectController
   }
 
   public async saveProject(project: Project): Promise<ErrorObject<ProjectUpdates> | null> {
+    const appController: AppController = ProjectController.controllers[Controller.APP];
+    const isNewProject: boolean = project.isNewProject();
+
     try {
-      if (project.isNewProject()) {
+      if (isNewProject) {
         await this.createProject(project);
       } else {
         await this.updateProject(project);
       }
 
+      appController.showNotification({
+        type: NotificationType.SUCCESS,
+        heading: isNewProject ? 'Created' : 'Updated',
+        message: `Project <strong>${project.name}</strong> is ${isNewProject ? 'created' : 'updated'} successfully`,
+      });
+
       return null;
     } catch (e: any) {
-      console.log(e); // @TODO: add error
-
       if (e.name === ErrorName.VALIDATION_ERROR) {
-        return e.error;
+        appController.showNotification(e.notification);
+
+        return e.errors;
       }
+
+      console.log(e); // @TODO: add error
 
       return null;
     }
   }
 
-  public async deleteProject({ id }: Project): Promise<boolean> {
+  public async archiveProject(projectToArchive: Project): Promise<boolean> {
+    const appController: AppController = ProjectController.controllers[Controller.APP];
+
     try {
-      await this.api.deleteProject(id);
-      this.storage.removeProject(id);
+      appController.showNotification({
+        type: NotificationType.INFO,
+        heading: EMPTY_STRING,
+        message: `Archiving <strong>${projectToArchive.name}</strong> project`,
+        group: NotificationGroup.PROCESS,
+      });
+
+      projectToArchive.archive();
+      await this.updateProject(projectToArchive);
+
+      await appController.removeNotification();
+
+      appController.showNotification({
+        type: NotificationType.SUCCESS,
+        heading: 'Archived',
+        message: `Project <strong>${projectToArchive.name}</strong> is archived successfully`,
+      });
+
+      return true;
+    } catch (e: any) {
+      if (e.name === ErrorName.VALIDATION_ERROR) {
+        appController.showNotification(e.notification);
+
+        return e.errors;
+      }
+
+      console.log(e); // @TODO: add error
+
+      return false;
+    }
+  }
+
+  public async restoreProject(projectToRestore: Project): Promise<boolean> {
+    const appController: AppController = ProjectController.controllers[Controller.APP];
+
+    try {
+      appController.showNotification({
+        type: NotificationType.INFO,
+        heading: EMPTY_STRING,
+        message: `Restoring <strong>${projectToRestore.name}</strong> project`,
+        group: NotificationGroup.PROCESS,
+      });
+
+      projectToRestore.restore();
+
+      await this.updateProject(projectToRestore);
+
+      await appController.removeNotification();
+
+      appController.showNotification({
+        type: NotificationType.SUCCESS,
+        heading: 'Restored',
+        message: `Project <strong>${projectToRestore.name}</strong> is restored successfully`,
+      });
+
+      return true;
+    } catch (e: any) {
+      if (e.name === ErrorName.VALIDATION_ERROR) {
+        appController.showNotification(e.notification);
+
+        return e.errors;
+      }
+
+      console.log(e); // @TODO: add error
+
+      return false;
+    }
+  }
+
+  public async deleteProject(projectToDelete: Project): Promise<boolean> {
+    const appController: AppController = ProjectController.controllers[Controller.APP];
+
+    try {
+      appController.showNotification({
+        type: NotificationType.INFO,
+        heading: EMPTY_STRING,
+        message: `Deleting <strong>${projectToDelete.name}</strong> project`,
+        group: NotificationGroup.PROCESS,
+      });
+
+      projectToDelete.delete();
+      await this.updateProject(projectToDelete);
+
+      const undoInterval: number = setTimeout(
+        () => {
+          this.api.deleteProject(projectToDelete.id)
+            .then(() => {
+              this.storage.removeProject(projectToDelete.id);
+            });
+        },
+        UNDO_NOTIFICATION_LIFE,
+      );
+
+      await appController.removeNotification();
+
+      appController.showNotification({
+        type: NotificationType.SUCCESS,
+        heading: 'Deleted',
+        message: `Project <strong>${projectToDelete.name}</strong> is deleted successfully`,
+        group: NotificationGroup.UNDO,
+        life: UNDO_NOTIFICATION_LIFE,
+        undo: (): void => {
+          clearInterval(undoInterval);
+
+          const deletedProject: Project = projectToDelete.mergeWithUpdates();
+          deletedProject.restore();
+
+          this.updateProject(deletedProject);
+        },
+      });
 
       return true;
     } catch (e) {
@@ -107,19 +236,19 @@ export class ProjectController
   }
 
   private async createProject(project: Project): Promise<void> {
-    const projectUpdates: ProjectUpdates = project.getUpdates();
-    this.validator.validateToCreate(projectUpdates);
+    let projectUpdates: ProjectUpdates = project.getUpdates();
+    projectUpdates = this.validator.validateToCreate(projectUpdates);
 
     const createdProject: Project = await this.api.createProject(projectUpdates);
     this.storage.addProject(createdProject);
   }
 
   private async updateProject(project: Project): Promise<void> {
-    const projectUpdates: ProjectUpdates = project.getUpdates();
-    this.validator.validateToUpdate(projectUpdates);
+    let projectUpdates: ProjectUpdates = project.getUpdates();
+    projectUpdates = this.validator.validateToUpdate(projectUpdates);
 
     await this.api.updateProject(project.id, projectUpdates);
-    this.storage.updateProject(project.getUpdatedProject());
+    this.storage.updateProject(project.mergeWithUpdates(projectUpdates));
   }
 
 }

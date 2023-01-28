@@ -8,13 +8,13 @@
 import { Icon as IconifyIcon } from '@iconify/vue';
 import type { AssetsProjectIcon } from 'shared/types';
 
-type ComponentProps = {
+type Props = {
   icon: AssetsProjectIcon;
   handleClick?: boolean;
 }
 
 // Properties
-const props = defineProps<ComponentProps>();
+const props = defineProps<Props>();
 </script>
 
 <style scoped lang="scss"></style>

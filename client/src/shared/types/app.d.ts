@@ -1,20 +1,36 @@
-import type { Assets, ProjectUpdates, ErrorObject, Settings } from 'shared/types';
-import type { Popup } from 'shared/constants';
+import type { Assets } from 'shared/types';
+import type { NotificationGroup, NotificationType, Popup } from 'shared/constants';
+import type { Settings } from 'models/settings';
 
 export type AppState = {
-  activePopup: Popup | null;
-  assets: Assets;
+  popup: Popup | null;
+  notification: AppNotification | null;
   settings: Settings | null;
+  assets: Assets;
+}
+
+export type AppNotification = {
+  type: NotificationType;
+  heading: string;
+  message: string;
+  group?: NotificationGroup;
+  life?: number;
+  undo?: () => void;
 }
 
 export interface AppController {
   setup(): Promise<boolean>;
   openPopup(popup: Popup): void;
   closePopup(): void;
+  showNotification(notification: AppNotification): void;
+  removeNotification(): Promise<void>;
 }
 
 export interface AppApi {}
 
 export interface AppStorage {
-  setActivePopup(popup: Popup | null): void;
+  setPopup(popup: Popup): void;
+  removePopup(): void;
+  setNotification(notification: AppNotification): void;
+  removeNotification(): void;
 }

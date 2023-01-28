@@ -13,12 +13,12 @@
 <script setup lang="ts">
 import { ProjectsView } from 'shared/constants';
 
-type ComponentProps = {
+type Props = {
   view: ProjectsView;
 }
 
 // Properties
-const props = defineProps<ComponentProps>();
+const props = defineProps<Props>();
 </script>
 
 <style scoped lang="scss"></style>

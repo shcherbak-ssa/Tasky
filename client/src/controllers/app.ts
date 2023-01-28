@@ -1,13 +1,16 @@
 import type {
   AppApi,
   AppController as BaseAppController,
+  AppNotification,
   AppStorage,
   AssetsController,
   SettingsController,
   Validator,
 } from 'shared/types';
-import { Controller, Popup } from 'shared/constants';
+import { Controller, CssClass, NotificationGroup, NOTIFICATION_LIFE, Popup } from 'shared/constants';
 import { BaseController } from './base-controller';
+
+const POPUP_ELEMENT_ID: string = 'popup';
 
 export class AppController extends BaseController<AppApi, AppStorage, {}> implements BaseAppController {
 
@@ -18,7 +21,7 @@ export class AppController extends BaseController<AppApi, AppStorage, {}> implem
 
     if (appController.popupElement) {
       appController.popupElement.addEventListener('click', (e: Event) => {
-        if ((e.target as HTMLElement).id === 'popup') {
+        if ((e.target as HTMLElement).id === POPUP_ELEMENT_ID) {
           appController.closePopup();
         }
       });
@@ -45,16 +48,32 @@ export class AppController extends BaseController<AppApi, AppStorage, {}> implem
 
   public openPopup(popup: Popup): void {
     if (this.popupElement) {
-      this.storage.setActivePopup(popup);
-      this.popupElement.classList.remove('hidden');
+      this.storage.setPopup(popup);
+      this.popupElement.classList.remove(CssClass.HIDDEN);
     }
   }
 
   public closePopup(): void {
     if (this.popupElement) {
-      this.storage.setActivePopup(null);
-      this.popupElement.classList.add('hidden');
+      this.storage.removePopup();
+      this.popupElement.classList.add(CssClass.HIDDEN);
     }
+  }
+
+  public showNotification(notification: AppNotification): void {
+    notification.life = notification.life || NOTIFICATION_LIFE;
+    notification.group = notification.group || NotificationGroup.MESSAGE;
+
+    this.storage.setNotification(notification);
+  }
+
+  public async removeNotification(): Promise<void> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        this.storage.removeNotification();
+        resolve();
+      });
+    });
   }
 
 }

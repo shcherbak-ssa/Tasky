@@ -3,12 +3,12 @@
 </template>
 
 <script setup lang="ts">
-type ComponentProps = {
+type Props = {
   icon: string;
 }
 
 // Properties
-const props = defineProps<ComponentProps>();
+const props = defineProps<Props>();
 </script>
 
 <style scoped lang="scss">

@@ -42,7 +42,6 @@ export class ProjectsApi implements BaseProjectsApi {
     BaseApi.put({
       endpoint: ApiEndpoint.PROJECTS_ID,
       params: { id },
-      query: { hasDueDate: 'dueDate' in updates },
       body: updates,
     });
   }

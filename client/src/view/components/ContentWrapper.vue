@@ -10,12 +10,12 @@
 </template>
 
 <script setup lang="ts">
-type ComponentProps = {
+type Props = {
   type: 'simple' | 'section';
 }
 
 // Properties
-const props = defineProps<ComponentProps>();
+const props = defineProps<Props>();
 </script>
 
 <style scoped lang="scss"></style>

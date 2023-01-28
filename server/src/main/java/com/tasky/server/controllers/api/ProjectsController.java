@@ -4,66 +4,62 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tasky.server.models.Project;
 import com.tasky.server.services.ProjectsService;
 import com.tasky.server.shared.constants.ApiEndpoints;
-import com.tasky.server.shared.exceptions.ResourceNotFoundException;
+import com.tasky.server.shared.validations.ValidationGroups.ToCreate;
+import com.tasky.server.shared.validations.ValidationGroups.ToUpdate;
 
 @RestController
+@Validated
 public class ProjectsController {
-  
+
   @Autowired
   private ProjectsService service;
 
   @GetMapping(path = ApiEndpoints.PROJECTS_ID)
-  public ResponseEntity<Project> getProjectById(@PathVariable Long id) throws ResourceNotFoundException {
-    Project foundProject = this.service.getProjectById(id);
-
-    return new ResponseEntity<Project>(foundProject, HttpStatus.OK);
+  @ResponseStatus(HttpStatus.OK)
+  public Project getProjectById(@PathVariable Long id) {
+    return this.service.getProjectById(id);
   }
 
   @GetMapping(path = ApiEndpoints.PROJECTS)
-  public ResponseEntity<List<Project>> getProjects() {
-    List<Project> projects = this.service.getProjects();
-
-    return new ResponseEntity<List<Project>>(projects, HttpStatus.OK);
+  @ResponseStatus(HttpStatus.OK)
+  public List<Project> getProjects() {
+    return this.service.getProjects();
   }
 
   @PostMapping(path = ApiEndpoints.PROJECTS)
-  public ResponseEntity<Project> createProject(@RequestBody Project projectToCreate) {
-    Project createdProject = this.service.createProject(projectToCreate);
-
-    return new ResponseEntity<Project>(createdProject, HttpStatus.CREATED);
+  @ResponseStatus(HttpStatus.CREATED)
+  public Project createProject(@RequestBody @Validated(ToCreate.class) Project projectToCreate) {
+    return this.service.createProject(projectToCreate);
   }
 
   @PutMapping(path = ApiEndpoints.PROJECTS_ID)
-  public ResponseEntity<Void> updateProject(
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void updateProject(
     @PathVariable Long id,
-    @RequestParam(defaultValue = "false") String hasDueDate,
-    @RequestBody Project projectUpdates
-  ) throws ResourceNotFoundException {
+    @RequestBody @Validated(ToUpdate.class) Project projectUpdates
+  ) {
     projectUpdates.setId(id);
-    
-    this.service.updateProject(projectUpdates, Boolean.parseBoolean(hasDueDate));
 
-    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    this.service.updateProject(projectUpdates);
   }
 
   @DeleteMapping(path = ApiEndpoints.PROJECTS_ID)
-  public ResponseEntity<Void> deleteProject(@PathVariable Long id) {
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void deleteProject(@PathVariable Long id) {
     this.service.deleteProject(id);
-
-    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 
 }

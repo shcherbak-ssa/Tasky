@@ -24,12 +24,12 @@
 <script setup lang="ts">
 import ProjectItemWrapper from 'view/components/projects/ProjectItemWrapper.vue';
 
-type ComponentProps = {
+type Props = {
   isListView: boolean;
 }
 
 // Properties
-const props = defineProps<ComponentProps>();
+const props = defineProps<Props>();
 const emits = defineEmits(['item-click']);
 </script>
 

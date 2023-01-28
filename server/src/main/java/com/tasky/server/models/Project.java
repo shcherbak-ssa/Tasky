@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.tasky.server.shared.constants.ProjectsConstants;
+import com.tasky.server.shared.validations.ValidationGroups.ToCreate;
+import com.tasky.server.shared.validations.ValidationGroups.ToUpdate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,6 +14,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = ProjectsConstants.DATABASE_TABLE_NAME)
@@ -22,37 +27,72 @@ public class Project {
   private Long id;
 
   @Column
+  @NotNull(message = "\"name\" is required", groups = ToCreate.class)
+  @Size(min = 1, message = "\"name\" is required", groups = ToUpdate.class)
   private String name;
 
   @Column
   private String description;
 
   @ManyToOne
+  @NotNull(message = "\"color\" is required", groups = ToCreate.class)
   private AssetsColor color;
 
   @ManyToOne
+  @NotNull(message = "\"icon\" is required", groups = ToCreate.class)
   private AssetsProjectIcon icon;
+
+  @Column
+  private Boolean hasDueDate;
 
   @Column
   private LocalDate dueDate;
 
   @Column
+  private Boolean isArchived;
+
+  @Column
+  private LocalDateTime archivedAt;
+
+  @Column
+  @Null(message = "Must be empty", groups = ToUpdate.class)
+  @NotNull(message = "Cannot be empty", groups = ToCreate.class)
   private LocalDateTime createdAt;
 
   @Column
+  @Null(message = "Must be empty", groups = ToCreate.class)
+  @NotNull(message = "Cannot be empty", groups = ToUpdate.class)
   private LocalDateTime updatedAt;
+
+  @Column
+  private Boolean isDeleted;
 
   Project() {}
 
-  Project(String name, String description, AssetsColor color, AssetsProjectIcon icon,
-    LocalDate dueDate, LocalDateTime createdAt, LocalDateTime updatedAt) {
+  public Project(
+    String name,
+    String description,
+    AssetsColor color,
+    AssetsProjectIcon icon,
+    Boolean hasDueDate,
+    LocalDate dueDate,
+    Boolean isArchived,
+    LocalDateTime archivedAt,
+    LocalDateTime createdAt,
+    LocalDateTime updatedAt,
+    Boolean isDeleted
+  ) {
     this.name = name;
     this.description = description;
     this.color = color;
     this.icon = icon;
+    this.hasDueDate = hasDueDate;
     this.dueDate = dueDate;
+    this.isArchived = isArchived;
+    this.archivedAt = archivedAt;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
+    this.isDeleted = isDeleted;
   }
 
   public Long getId() {
@@ -68,7 +108,7 @@ public class Project {
   }
 
   public void setName(String name) {
-    this.name = name;
+    this.name = name.trim();
   }
 
   public String getDescription() {
@@ -76,6 +116,10 @@ public class Project {
   }
 
   public void setDescription(String description) {
+    if (description != null) {
+      description = description.trim();
+    }
+
     this.description = description;
   }
 
@@ -99,8 +143,32 @@ public class Project {
     return dueDate;
   }
 
+  public Boolean getHasDueDate() {
+    return this.hasDueDate;
+  }
+
+  public void setHasDueDate(Boolean hasDueDate) {
+    this.hasDueDate = hasDueDate;
+  }
+
   public void setDueDate(LocalDate dueDate) {
     this.dueDate = dueDate;
+  }
+
+  public Boolean getIsArchived() {
+    return this.isArchived;
+  }
+
+  public void setIsArchived(Boolean isArchived) {
+    this.isArchived = isArchived;
+  }
+
+  public LocalDateTime getArchivedAt() {
+    return this.archivedAt;
+  }
+
+  public void setArchivedAt(LocalDateTime archivedAt) {
+    this.archivedAt = archivedAt;
   }
 
   public LocalDateTime getCreatedAt() {
@@ -119,18 +187,36 @@ public class Project {
     this.updatedAt = updatedAt;
   }
 
-  public Project mergeWithUpdates(Project projectUpdates) {
+  public Boolean getIsDeleted() {
+    return this.isDeleted;
+  }
+
+  public void setIsDeleted(Boolean isDeleted) {
+    this.isDeleted = isDeleted;
+  }
+
+  public Project mergeWithUpdates(Project updates) {
     Project updatedProject = new Project();
 
     updatedProject.setId(this.id);
     updatedProject.setCreatedAt(this.createdAt);
-    updatedProject.setUpdatedAt(projectUpdates.updatedAt);
+    updatedProject.setUpdatedAt(updates.updatedAt);
 
-    updatedProject.setName(projectUpdates.name == null ? this.name : projectUpdates.name);
-    updatedProject.setDescription(projectUpdates.description == null ? this.description : projectUpdates.description);
-    updatedProject.setColor(projectUpdates.color == null ? this.color : projectUpdates.color);
-    updatedProject.setIcon(projectUpdates.icon == null ? this.icon : projectUpdates.icon);
-    updatedProject.setDueDate(projectUpdates.dueDate == null ? this.dueDate : projectUpdates.dueDate);
+    updatedProject.setName(updates.name == null ? this.name : updates.name);
+    updatedProject.setDescription(updates.description == null ? this.description : updates.description);
+    updatedProject.setColor(updates.color == null ? this.color : updates.color);
+    updatedProject.setIcon(updates.icon == null ? this.icon : updates.icon);
+    updatedProject.setHasDueDate(updates.hasDueDate == null ? this.hasDueDate : updates.hasDueDate);
+    updatedProject.setIsArchived(updates.isArchived == null ? this.isArchived : updates.isArchived);
+    updatedProject.setIsDeleted(updates.isDeleted == null ? this.isDeleted : updates.isDeleted);
+
+    if (updates.hasDueDate != null) {
+      updatedProject.setDueDate(updates.hasDueDate ? updates.dueDate : null);
+    }
+
+    if (updates.isArchived != null) {
+      updatedProject.setArchivedAt(updates.isArchived ? updates.archivedAt : null);
+    }
 
     return updatedProject;
   }
@@ -138,7 +224,8 @@ public class Project {
   @Override
   public String toString() {
     return "Project [id=" + id + ", name=" + name + ", description=" + description + ", color=" + color + ", icon="
-        + icon + ", dueDate=" + dueDate + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
+        + icon + ", hasDueDate=" + hasDueDate + ", dueDate=" + dueDate + ", isArchived=" + isArchived + ", archivedAt="
+        + archivedAt + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", isDeleted=" + isDeleted + "]";
   }
 
 }

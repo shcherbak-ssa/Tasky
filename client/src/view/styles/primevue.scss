@@ -31,7 +31,7 @@
       box-shadow: none;
       border-color: var(--text-color-secondary);
     }
-  
+
     &:enabled:hover {
       border-color: var(--text-color-secondary);
     }
@@ -44,6 +44,8 @@
 }
 
 .p-button {
+  padding: 0.5rem 1.25rem;
+
   &-icon-only.p-button-rounded.p-button-sm {
     @apply w-8 h-8 p-0;
   }
@@ -90,8 +92,10 @@
 }
 
 .p-dialog {
+  min-width: 320px;
+
   & &-content {
-    @apply border-t-2 border-gray-200 pt-6;
+    @apply border-t-2 border-gray-200 p-6;
   }
 
   &.p-confirm-dialog .p-confirm-dialog-message {

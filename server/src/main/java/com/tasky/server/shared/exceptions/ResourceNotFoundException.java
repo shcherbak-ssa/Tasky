@@ -1,6 +1,7 @@
 package com.tasky.server.shared.exceptions;
 
 public class ResourceNotFoundException extends RuntimeException {
+
   private String message;
 
   public ResourceNotFoundException() {}
@@ -9,4 +10,5 @@ public class ResourceNotFoundException extends RuntimeException {
     super(message);
     this.message = message;
   }
+
 }

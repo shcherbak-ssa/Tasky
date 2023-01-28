@@ -11,13 +11,13 @@
 <script setup lang="ts">
 import type { AssetsColor } from 'shared/types';
 
-type ComponentProps = {
+type Props = {
   color: AssetsColor;
   isSelected: boolean;
 }
 
 // Properties
-const props = defineProps<ComponentProps>();
+const props = defineProps<Props>();
 const emits = defineEmits(['color-selected']);
 </script>
 

@@ -5,7 +5,7 @@
     "strict": true,
     "jsx": "preserve",
     "moduleResolution": "node",
-    "skipLibCheck": true,
+    "skipLibCheck": false,
     "strictNullChecks": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,

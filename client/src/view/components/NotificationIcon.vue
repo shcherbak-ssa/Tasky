@@ -1,6 +1,14 @@
 <template>
   <div>
-    <BaseIcon v-if="props.severity === ToastSeverity.SUCCESS" icon="pi-check-circle" />
+    <BaseIcon
+      v-if="props.severity === ToastSeverity.SUCCESS"
+      icon="pi-check-circle"
+    />
+
+    <BaseIcon
+      v-if="props.severity === ToastSeverity.ERROR"
+      icon="pi-times-circle"
+    />
   </div>
 </template>
 

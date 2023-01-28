@@ -6,8 +6,8 @@ import { BaseValidator } from './base-validator';
 export class ProjectsValidator extends BaseValidator<ProjectUpdates> {
 
   protected schema: Joi.ObjectSchema<ProjectUpdates> = Joi.object({
-    name: Joi.string().empty(),
-    description: Joi.string(),
+    name: Joi.string().trim().empty(),
+    description: Joi.string().trim(),
     color: Joi.object({
       id: Joi.number(),
       bgColor: Joi.string().length(projectValidationRules.bgColorLength),
@@ -18,14 +18,29 @@ export class ProjectsValidator extends BaseValidator<ProjectUpdates> {
       family: Joi.string().max(projectValidationRules.iconGroupLength),
       name: Joi.string().max(projectValidationRules.iconNameLength),
     }),
-    dueDate: Joi.date().empty(null),
+    hasDueDate: Joi.boolean(),
+    dueDate: Joi.date().empty(null)
+      .when('hasDueDate', {
+        is: Joi.boolean().exist().valid(true),
+        then: Joi.date().required(),
+        otherwise: Joi.date().empty(null),
+      }),
+    isArchived: Joi.boolean(),
+    archivedAt: Joi.date().empty(null)
+      .when('isArchived', {
+        is: Joi.boolean().exist().valid(true),
+        then: Joi.date().required(),
+        otherwise: Joi.date().empty(null),
+      }),
     createdAt: Joi.date().empty(null),
     updatedAt: Joi.date().empty(null),
+    isDeleted: Joi.boolean(),
   });
 
   protected schemaToCreate: Joi.ObjectSchema = this.schema.keys({
     name: this.schema.extract('name').required(),
     color: this.schema.extract('color').required(),
+    icon: this.schema.extract('icon').required(),
     createdAt: this.schema.extract('createdAt').required(),
   });
 

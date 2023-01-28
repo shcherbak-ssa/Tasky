@@ -1,12 +1,18 @@
-import type { ErrorObject } from 'shared/types';
-import { ErrorName } from 'shared/constants';
+import type { AppNotification, ErrorObject } from 'shared/types';
+import { ErrorName, NotificationType } from 'shared/constants';
 
 export class ValidationError<T> extends Error {
   name: string = ErrorName.VALIDATION_ERROR;
-  error: ErrorObject<T>;
+  errors: ErrorObject<T>;
 
-  constructor(error: ErrorObject<T>) {
-    super(error.message);
-    this.error = error;
+  notification: AppNotification = {
+    type: NotificationType.ERROR,
+    heading: 'Validation error',
+    message: 'You entered incorrect data or did not fill in the required fields',
+  };
+
+  constructor(errors: ErrorObject<T>) {
+    super('');
+    this.errors = errors;
   }
 }

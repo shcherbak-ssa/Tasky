@@ -17,7 +17,7 @@
       @create-project="createProject"
     />
 
-    <ToastContainer />
+    <NotificationContainer />
     <PrimevueConfirmDialog />
 
     <template>
@@ -37,7 +37,7 @@ import { useController, useEditProjectPopup } from 'view/hooks';
 import { type Store, useStore } from 'view/store';
 
 import AppHeaderContainer from 'view/containers/AppHeaderContainer.vue';
-import ToastContainer from 'view/containers/ToastContainer.vue';
+import NotificationContainer from 'view/containers/NotificationContainer.vue';
 import SpeedAddButton from 'view/components/SpeedAddButton.vue';
 import ProjectEditPopup from './popups/ProjectEditPopup.vue';
 
@@ -55,7 +55,7 @@ const openEditProjectPopup = useEditProjectPopup();
 const appController: AppController = useController(Controller.APP);
 
 const activePopup = computed<Popup | null>(() => {
-  return store.state.app.activePopup;
+  return store.state.app.popup;
 });
 
 // Hooks

@@ -1,9 +1,11 @@
 <template>
   <ContentWrapper type="simple">
-    <div class="border-b-2 flex items-center justify-between py-2">
-      <h3>Projects</h3>
-
-      <div>
+    <ContentSection
+      :tabs="sectionTabs"
+      :active-tab-key="state.activeTabKey"
+      @select-tab="selectSectionTab"
+    >
+      <template #rightSide>
         <BaseButton
           class="p-button-sm p-button-text p-button-rounded"
           :icon="`pi ${activeProjectsViewIcon}`"
@@ -15,26 +17,29 @@
           :model="projectsViewMenuItems"
           :popup="true"
         />
-      </div>
-    </div>
+      </template>
+    </ContentSection>
 
     <ProjectListWrapper v-if="state.isProjectsLoaded" :view="settings.projectsView">
-      <ProjectItemAdd
-        :isListView="isListProjectsView"
-        @item-click="createProject"
-      />
+      <TransitionGroup name="list">
+        <ProjectItemAdd
+          v-if="state.activeTabKey === TabKey.PROJECT"
+          :isListView="isListProjectsView"
+          @item-click="createProject"
+        />
 
-      <template v-if="projects.length">
         <template v-for="project in projects" :key="project.id">
           <ProjectItem
             v-if="project.id !== state.deletingProjectId"
             :project="project"
             :is-list-view="isListProjectsView"
             @update-project="updateProject(project.id)"
+            @archive-project="archiveProject(project)"
+            @restore-project="restoreProject(project)"
             @delete-project="deleteProject(project)"
           />
         </template>
-      </template>
+      </TransitionGroup>
     </ProjectListWrapper>
 
     <ProjectListWrapper v-else :view="settings.projectsView">
@@ -48,17 +53,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue';
-import { type Router, useRouter } from 'vue-router';
+import { computed, onMounted, reactive, ref, watch } from 'vue';
 import type { MenuItem } from 'primevue/menuitem';
-import { ToastSeverity } from 'primevue/api';
 import { useConfirm } from 'primevue/useconfirm';
-import { useToast } from 'primevue/usetoast';
 
 import type { ProjectsController, SettingsController } from 'shared/types';
 import type { Project } from 'models/project';
 import type { Settings } from 'models/settings';
-import { Controller, ProjectsView, ToastGroup, TOAST_LIFE, ZERO } from 'shared/constants';
+import { Controller, ProjectsView, ZERO } from 'shared/constants';
 import { useController, useEditProjectPopup } from 'view/hooks';
 import { type Store, useStore } from 'view/store';
 
@@ -67,14 +69,22 @@ import ProjectListWrapper from 'view/components/projects/ProjectListWrapper.vue'
 import ContentWrapper from 'view/components/ContentWrapper.vue';
 import ProjectItemAdd from 'view/components/projects/ProjectItemAdd.vue';
 import ProjectItemSkeleton from 'view/components/projects/ProjectItemSkeleton.vue';
+import ContentSection from 'view/components/ContentSection.vue';
+
+enum TabKey {
+  PROJECT = 'project',
+  ARCHIVE = 'archive',
+}
 
 type State = {
+  activeTabKey: TabKey;
   isProjectsLoaded: boolean;
   deletingProjectId: number;
 }
 
 // Properties
 const state = reactive<State>({
+  activeTabKey: TabKey.PROJECT,
   isProjectsLoaded: false,
   deletingProjectId: ZERO,
 });
@@ -82,7 +92,6 @@ const state = reactive<State>({
 const projectsViewMenu = ref(null);
 
 const store: Store = useStore();
-const toast = useToast();
 const confirm = useConfirm();
 const openEditProjectPopup = useEditProjectPopup();
 
@@ -90,7 +99,20 @@ const projectsController: ProjectsController = useController(Controller.PROJECTS
 const settingsController: SettingsController = useController(Controller.SETTINGS);
 
 const projects = computed<Project[]>(() => {
-  return store.state.projects.list;
+  return store.state.projects.list
+    .filter(({ isArchived, isDeleted }) => {
+      if (isDeleted) {
+        return false;
+      }
+      
+      return state.activeTabKey === TabKey.PROJECT
+        ? !isArchived
+        : isArchived;
+    });
+});
+
+const isThereArchivedProject = computed<boolean>(() => {
+  return !!store.state.projects.list.find(({ isArchived }) => isArchived);
 });
 
 const settings = computed<Settings>(() => {
@@ -126,6 +148,22 @@ const projectsViewMenuItems = computed<MenuItem[]>(() => {
   ];
 });
 
+const sectionTabs = computed<{ label: string; key: string; }[]>(() => {
+  const tabs = [{
+    label: 'Projects',
+    key: TabKey.PROJECT,
+  }];
+
+  if (isThereArchivedProject.value) {
+    tabs.push({
+      label: 'Archive',
+      key: TabKey.ARCHIVE,
+    });
+  }
+
+  return tabs;
+});
+
 // Hooks
 onMounted(async () => {
   const success: boolean = await projectsController.loadProjects();
@@ -135,7 +173,18 @@ onMounted(async () => {
   }
 });
 
+watch(
+  () => isThereArchivedProject.value,
+  () => {
+    state.activeTabKey = TabKey.PROJECT;
+  },
+);
+
 // Methods
+function selectSectionTab(tabKey: TabKey): void {
+  state.activeTabKey = tabKey;
+}
+
 async function updateProjectsViewSettings(newView: ProjectsView): Promise<void> {
   settings.value.projectsView = newView;
   await settingsController.saveSettings(settings.value);
@@ -156,6 +205,22 @@ function updateProject(projectId: number): void {
   openEditProjectPopup(projectId);
 }
 
+function archiveProject(project: Project): void {
+  confirm.require({
+    header: 'Archive project',
+    message: 'Are you sure?',
+    acceptClass: 'p-button-danger',
+    defaultFocus: 'reject',
+    accept: () => {
+      projectsController.archiveProject(project);
+    },
+  });
+}
+
+function restoreProject(project: Project): void {
+  projectsController.restoreProject(project);
+}
+
 function deleteProject(project: Project): void {
   confirm.require({
     header: 'Delete project',
@@ -165,31 +230,25 @@ function deleteProject(project: Project): void {
     accept: () => {
       state.deletingProjectId = project.id;
 
-      toast.add({
-        severity: ToastSeverity.INFO,
-        summary: `Deleting <strong>${project.name}</strong> project`,
-        group: ToastGroup.DELETE_PROCESSING,
-      });
-
       projectsController.deleteProject(project)
-        .then((success: boolean) => {
-          if (success) {
-            toast.removeGroup(ToastGroup.DELETE_PROCESSING);
-
-            toast.add({
-              severity: ToastSeverity.SUCCESS,
-              summary: `Deleted`,
-              detail: `Project <strong>${project.name}</strong> deleted successfully`,
-              group: ToastGroup.MESSAGE,
-              life: TOAST_LIFE,
-            });
-          }
-
-          state.deletingProjectId = 0;
+        .then(() => {
+          state.deletingProjectId = ZERO;
         });
     },
   });
 }
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.list-enter-active,
+.list-leave-active {
+  opacity: 0;
+  transition: .2s ease;
+}
+
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+</style>
