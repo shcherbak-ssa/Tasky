@@ -1,6 +1,6 @@
 import type { ApiErrorResponse, ApiRequest } from 'shared/types';
 import { apiHeaders, ApiMethod, ApiEndpoint, ApiResponseCode, QUERY_URL_SEPARATOR } from 'shared/constants';
-import { ValidationError } from 'shared/errors';
+import { ApiError, ValidationError } from 'shared/errors';
 
 export class BaseApi {
 
@@ -46,14 +46,13 @@ export class BaseApi {
       return await response.json() as R;
     }
 
-    if (response.status === ApiResponseCode.BAD_REQUEST) {
-      const { errors } = await response.json() as ApiErrorResponse<B>;
+    const { errors, message } = await response.json() as ApiErrorResponse<B>;
 
+    if (response.status === ApiResponseCode.BAD_REQUEST) {
       throw new ValidationError(errors);
     }
 
-    // @TODO: add error
-    throw new Error(`${response.status} : ${response.statusText}`);
+    throw new ApiError(response.status.toString(), message);
   }
 
   private static setParamsToUrl<P extends object>(endpoint: ApiEndpoint, params: P): string {

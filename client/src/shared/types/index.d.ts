@@ -1,6 +1,6 @@
 import type { ApiEndpoint, Controller } from 'shared/constants';
 import type { AppController, AppState } from './app';
-import type { AssetsController } from './assets';
+import type { Assets, AssetsController } from './assets';
 import type { ProjectsController, ProjectsState } from './projects';
 import type { SettingsController } from './settings';
 
@@ -27,6 +27,7 @@ export type ApiRequest<P, Q, B> = {
 
 export type StoreState = {
   app: AppState;
+  assets: Assets;
   projects: ProjectsState;
 }
 
@@ -40,4 +41,9 @@ export type ControllerList = {
   [Controller.ASSETS]: AssetsController;
   [Controller.PROJECTS]: ProjectsController;
   [Controller.SETTINGS]: SettingsController;
+}
+
+export type ViewTab = {
+  label: string;
+  key: string;
 }

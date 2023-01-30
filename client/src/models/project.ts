@@ -130,15 +130,6 @@ export class Project {
     return this.schema.hasDueDate;
   }
 
-  private set hasDueDate(newState: boolean) {
-    if (this.schema.hasDueDate === newState) {
-      delete this.updates.hasDueDate;
-      return;
-    }
-
-    this.updates.hasDueDate = newState;
-  }
-
   public get dueDate(): Date | null {
     if (this.updates.dueDate !== undefined) {
       return this.updates.dueDate;
@@ -160,7 +151,7 @@ export class Project {
       }
     }
 
-    this.hasDueDate = !!date;
+    this.updates.hasDueDate = !!date;
     this.updates.dueDate = date;
   }
 
@@ -229,10 +220,9 @@ export class Project {
     this.updates = {};
   }
 
-  public mergeWithUpdates(updates?: ProjectUpdates): Project {
+  public mergeWithUpdates(updates: ProjectUpdates = this.updates): Project {
     return Project.create({
       ...this.schema,
-      ...this.updates,
       ...updates,
     });
   }

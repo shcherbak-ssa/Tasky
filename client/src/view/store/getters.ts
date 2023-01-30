@@ -16,7 +16,7 @@ export const getters: GetterTree<StoreState, StoreState> & Getters = {
 
   getAssetsColor(state: StoreState) {
     return (searchId: number): AssetsColor => {
-      const color: AssetsColor | undefined = state.app.assets.colors.find(({ id }) => id === searchId);
+      const color: AssetsColor | undefined = state.assets.colors.find(({ id }) => id === searchId);
 
       if (color) {
         return color;
@@ -29,8 +29,7 @@ export const getters: GetterTree<StoreState, StoreState> & Getters = {
 
   getAssetsProjectIcon(state: StoreState) {
     return (searchId: number): AssetsProjectIcon => {
-      const projectIcon: AssetsProjectIcon | undefined
-        = state.app.assets.projectIcons.find(({ id }) => id === searchId);
+      const projectIcon: AssetsProjectIcon | undefined = state.assets.projectIcons.find(({ id }) => id === searchId);
 
       if (projectIcon) {
         return projectIcon;

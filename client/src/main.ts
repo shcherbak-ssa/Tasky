@@ -6,7 +6,7 @@ import type {
   SettingsController as BaseSettingsController,
 } from 'shared/types';
 import { Controller } from 'shared/constants';
-import { AppController, AssetsController, BaseController, ProjectController, SettingsController } from './controllers';
+import { AppController, AssetsController, BaseController, ProjectsController, SettingsController } from './controllers';
 import { AppApi, AssetsApi, ProjectsApi, SettingsApi } from './services/api';
 import { AppStorage, AssetsStorage, ProjectsStorage, SettingsStorage } from './services/storage';
 import { AppValidator, AssetsValidator, ProjectsValidator, SettingsValidator } from './services/validator';
@@ -23,15 +23,15 @@ function setupControllers(): ControllerList {
       AppStorage.create(),
       AppValidator.create(),
     );
-  
+
   const assetsController: BaseAssetsController = AssetsController
     .create(
       AssetsApi.create(),
       AssetsStorage.create(),
       AssetsValidator.create(),
     );
-  
-  const projectsController: BaseProjectsController = ProjectController
+
+  const projectsController: BaseProjectsController = ProjectsController
     .create(
       ProjectsApi.create(),
       ProjectsStorage.create(),
@@ -44,14 +44,14 @@ function setupControllers(): ControllerList {
       SettingsStorage.create(),
       SettingsValidator.create(),
     );
-  
+
   const controllers: ControllerList = {
     [Controller.APP]: appController,
     [Controller.ASSETS]: assetsController,
     [Controller.PROJECTS]: projectsController,
     [Controller.SETTINGS]: settingsController,
   };
-  
+
   BaseController.setControllers(controllers);
 
   return controllers;

@@ -1,37 +1,36 @@
-import { RouteRecordRaw, createRouter, createWebHistory, Router, RouteLocationNormalized } from 'vue-router';
-import { PageRoute, PageTitle, DOCUMENT_TITLE_DIVIDER, PageHeading } from 'shared/constants';
+import 'vue-router';
+
+import { RouteRecordRaw, createRouter, createWebHistory, Router } from 'vue-router';
+import { PageName, PagePath, PageTitle } from 'shared/constants';
 
 import HomePage from 'view/pages/HomePage.vue';
-
-import 'vue-router';
+import ProjectPage from 'view/pages/ProjectPage.vue';
 
 declare module 'vue-router' {
   interface RouteMeta {
-    pageTitle: PageTitle;
-    pageHeading: PageHeading;
+    pageTitle: string;
+    pageHeading: string;
   }
 }
 
 const routes: RouteRecordRaw[] = [
   {
-    path: PageRoute.HOME,
+    path: PagePath.HOME,
     component: HomePage,
     meta: {
       pageTitle: PageTitle.HOME,
-      pageHeading: PageHeading.HOME,
+      pageHeading: PageTitle.HOME,
     },
   },
+  {
+    path: PagePath.PROJECT,
+    component: ProjectPage,
+    name: PageName.PROJECT,
+    props: true,
+  }
 ];
 
 export const router: Router = createRouter({
   history: createWebHistory(),
   routes,
 });
-
-router.beforeEach((to: RouteLocationNormalized) => {
-  updateDocumentTitle(to);
-});
-
-function updateDocumentTitle({ meta: { pageTitle } }: RouteLocationNormalized): void {
-  document.title = [PageTitle.BASE, pageTitle].join(DOCUMENT_TITLE_DIVIDER);
-}

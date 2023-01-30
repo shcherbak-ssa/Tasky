@@ -67,7 +67,7 @@ public class Project {
   @Column
   private Boolean isDeleted;
 
-  Project() {}
+  public Project() {}
 
   public Project(
     String name,
@@ -200,6 +200,8 @@ public class Project {
 
     updatedProject.setId(this.id);
     updatedProject.setCreatedAt(this.createdAt);
+    updatedProject.setDueDate(this.dueDate);
+    updatedProject.setArchivedAt(this.archivedAt);
     updatedProject.setUpdatedAt(updates.updatedAt);
 
     updatedProject.setName(updates.name == null ? this.name : updates.name);

@@ -24,7 +24,7 @@ export const mutations: MutationTree<StoreState> & Mutations = {
   },
 
   [StoreMutation.ADD_ASSETS](state: StoreState, assets: Assets) : void {
-    state.app.assets = assets;
+    state.assets = assets;
   },
 
   [StoreMutation.SET_SETTINGS](state: StoreState, settings: Settings): void {

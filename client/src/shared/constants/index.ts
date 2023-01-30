@@ -8,6 +8,7 @@ export const EMPTY_STRING: string = '';
 export const QUERY_URL_SEPARATOR: string = '?';
 
 export enum ErrorName {
+  API_ERROR = 'ApiError',
   VALIDATION_ERROR = 'ValidationError',
 }
 
@@ -49,7 +50,7 @@ export enum ApiResponseCode {
 // View
 export const NOTIFICATION_LIFE: number = 5000;
 export const UNDO_NOTIFICATION_LIFE: number = 20000;
-export const DOCUMENT_TITLE_DIVIDER: string = ' | ';
+export const PAGE_TITLE_DIVIDER: string = ' | ';
 
 export enum NotificationGroup {
   MESSAGE = 'message',
@@ -67,20 +68,27 @@ export enum CssClass {
   HIDDEN = 'hidden',
 }
 
+export enum ProjectPageTabKey {
+  OVERVIEW = 'overview',
+  LIST = 'list',
+  BOARD = 'board',
+}
+
 export enum Popup {
   EDIT_PROJECT = 'edit-project',
 }
 
-export enum PageRoute {
+export enum PageName {
+  PROJECT = 'project',
+}
+
+export enum PagePath {
   HOME = '/',
+  PROJECT = '/projects/:id',
 }
 
 export enum PageTitle {
   BASE = 'Tasky',
-  HOME = 'Home',
-}
-
-export enum PageHeading {
   HOME = 'Home',
 }
 
@@ -114,10 +122,10 @@ export const defaultStoreState: StoreState = {
     popup: null,
     notification: null,
     settings: null,
-    assets: {
-      colors: [],
-      projectIcons: [],
-    },
+  },
+  assets: {
+    colors: [],
+    projectIcons: [],
   },
   projects: {
     list: [],
@@ -129,6 +137,7 @@ export enum StoreMutation {
   SET_POPUP = 'set-popup',
   SET_NOTIFICATION = 'set-notification',
   SET_SETTINGS = 'set-settings',
+  SET_PAGE_META = 'set-page-meta',
   ADD_ASSETS = 'add-assets',
   ADD_PROJECTS = 'add-projects',
   SET_ACTIVE_PROJECT = 'set-active-project',

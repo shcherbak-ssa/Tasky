@@ -13,7 +13,7 @@ export class AssetsStorage extends BaseStorage implements BaseAssetsStorage {
   }
 
   public getAssets<K extends keyof Assets>(key: K): Assets[K] {
-    return this.storage.state.app.assets[key];
+    return this.storage.state.assets[key];
   }
 
 }
