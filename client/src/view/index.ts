@@ -24,12 +24,12 @@ import type { ControllerList } from 'shared/types';
 import { router } from 'view/router';
 import { store, storeKey } from 'view/store';
 
-import AppContainer from 'view/containers/AppContainer.vue';
+import AppLayout from 'view/layouts/AppLayout.vue';
 import BaseIcon from 'view/components/base/BaseIcon.vue';
 import BaseLabel from 'view/components/base/BaseLabel.vue';
 
 export function setupView(controllers: ControllerList): void {
-  const app = createApp(AppContainer);
+  const app = createApp(AppLayout);
 
   app.use(router);
   app.use(store, storeKey);

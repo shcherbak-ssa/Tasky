@@ -2,10 +2,7 @@
   <PrimevueSpeedDial
     direction="up"
     :model="items"
-    :tooltip-options="{
-      event: 'hover',
-      position: 'left'
-    }"
+    :tooltip-options="{ event: 'hover', position: 'left' }"
   />
 </template>
 
@@ -13,15 +10,17 @@
 import type { MenuItem } from 'primevue/menuitem';
 import PrimevueSpeedDial from 'primevue/speeddial';
 
+import { useEditProjectPopup } from 'view/hooks';
+
 // Properties
-const emits = defineEmits(['create-project']);
+const openCreateProjectPopup = useEditProjectPopup();
 
 const items: MenuItem[] = [
   {
     label: 'Create Project',
     icon: 'pi pi-box',
     command: () => {
-      emits('create-project');
+      openCreateProjectPopup();
     },
   },
   {

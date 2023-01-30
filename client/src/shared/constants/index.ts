@@ -49,6 +49,7 @@ export enum ApiResponseCode {
 // View
 export const NOTIFICATION_LIFE: number = 5000;
 export const UNDO_NOTIFICATION_LIFE: number = 20000;
+export const DOCUMENT_TITLE_DIVIDER: string = ' | ';
 
 export enum NotificationGroup {
   MESSAGE = 'message',
@@ -71,7 +72,16 @@ export enum Popup {
 }
 
 export enum PageRoute {
-  OVERVIEW = '/overview',
+  HOME = '/',
+}
+
+export enum PageTitle {
+  BASE = 'Tasky',
+  HOME = 'Home',
+}
+
+export enum PageHeading {
+  HOME = 'Home',
 }
 
 export enum HEXColorOpacity {

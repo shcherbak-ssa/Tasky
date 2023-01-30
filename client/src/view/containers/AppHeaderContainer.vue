@@ -4,7 +4,7 @@
       <div class="flex items-center gap-3">
         <BaseIcon icon="pi-bars" />
         <h1>
-          <span>Tasky</span>
+          <span>{{ currentRoute.meta.pageHeading }}</span>
         </h1>
       </div>
       <div class="">
@@ -15,7 +15,10 @@
 </template>
 
 <script setup lang="ts">
+import { useRoute } from 'vue-router';
+
 // Properties
+const currentRoute = useRoute();
 
 // Methods
 </script>
