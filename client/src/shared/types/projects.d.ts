@@ -29,6 +29,7 @@ export interface ProjectsController {
   activateProject(id?: number): boolean;
   updateActiveProject(activateProject: Project): void;
   removeActiveProject(): void
+  loadProject(id: number): Promise<boolean>;
   loadProjects(): Promise<boolean>;
   saveProject(project: Project): Promise<ErrorObject<ProjectUpdates> | null>;
   archiveProject(project: Project): Promise<boolean>;
@@ -47,9 +48,8 @@ export interface ProjectsApi {
 export interface ProjectsStorage {
   hasProject(id: number): boolean;
   getProject(id: number): Project | undefined;
+  getProjects(): Project[];
   setProjects(projects: Project[]): void;
-  addProject(project: Project): void;
-  updateProject(project: Project): void;
   removeProject(id: number): void;
   getActiveProject(): Project;
   setActiveProject(project: Project | null): void;

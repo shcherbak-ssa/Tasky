@@ -1,4 +1,3 @@
-import type { Assets } from 'shared/types';
 import type { NotificationGroup, NotificationType, Popup } from 'shared/constants';
 import type { Settings } from 'models/settings';
 
@@ -6,7 +5,6 @@ export type AppState = {
   popup: Popup | null;
   notification: AppNotification | null;
   settings: Settings | null;
-  assets: Assets;
 }
 
 export type AppNotification = {

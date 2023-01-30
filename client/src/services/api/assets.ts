@@ -1,6 +1,6 @@
 import type { Assets, AssetsApi as BaseAssetsApi } from 'shared/types';
 import { ApiEndpoint } from 'shared/constants';
-import { BaseApi } from './base-api';
+import { BaseApi } from './lib/base-api';
 
 export class AssetsApi implements BaseAssetsApi {
 

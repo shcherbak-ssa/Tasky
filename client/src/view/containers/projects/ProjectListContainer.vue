@@ -28,17 +28,13 @@
           @item-click="createProject"
         />
 
-        <template v-for="project in projects" :key="project.id">
-          <ProjectItem
-            v-if="project.id !== state.deletingProjectId"
-            :project="project"
-            :is-list-view="isListProjectsView"
-            @update-project="updateProject(project.id)"
-            @archive-project="archiveProject(project)"
-            @restore-project="restoreProject(project)"
-            @delete-project="deleteProject(project)"
-          />
-        </template>
+        <ProjectItemContainer
+          v-for="project in projects"
+          :key="project.id"
+          :project="project"
+          :is-list-view="isListProjectsView"
+          @item-click="openProjectPage(project.id)"
+        />
       </TransitionGroup>
     </ProjectListWrapper>
 
@@ -53,7 +49,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref, watch } from 'vue';
+import { computed, onMounted, reactive, ref, TransitionGroup, watch } from 'vue';
 import type { MenuItem } from 'primevue/menuitem';
 import { useConfirm } from 'primevue/useconfirm';
 
@@ -61,10 +57,10 @@ import type { ProjectsController, SettingsController } from 'shared/types';
 import type { Project } from 'models/project';
 import type { Settings } from 'models/settings';
 import { Controller, ProjectsView, ZERO } from 'shared/constants';
-import { useController, useEditProjectPopup } from 'view/hooks';
+import { useController, useEditProjectPopup, useProjectPage } from 'view/hooks';
 import { type Store, useStore } from 'view/store';
 
-import ProjectItem from 'view/components/projects/ProjectItem.vue';
+import ProjectItemContainer from 'view/containers/projects/ProjectItemContainer.vue';
 import ProjectListWrapper from 'view/components/projects/ProjectListWrapper.vue';
 import ContentWrapper from 'view/components/ContentWrapper.vue';
 import ProjectItemAdd from 'view/components/projects/ProjectItemAdd.vue';
@@ -79,20 +75,20 @@ enum TabKey {
 type State = {
   activeTabKey: TabKey;
   isProjectsLoaded: boolean;
-  deletingProjectId: number;
 }
 
 // Properties
 const state = reactive<State>({
   activeTabKey: TabKey.PROJECT,
   isProjectsLoaded: false,
-  deletingProjectId: ZERO,
 });
 
 const projectsViewMenu = ref(null);
 
 const store: Store = useStore();
 const confirm = useConfirm();
+
+const openProjectPage = useProjectPage();
 const openEditProjectPopup = useEditProjectPopup();
 
 const projectsController: ProjectsController = useController(Controller.PROJECTS);
@@ -104,7 +100,7 @@ const projects = computed<Project[]>(() => {
       if (isDeleted) {
         return false;
       }
-      
+
       return state.activeTabKey === TabKey.PROJECT
         ? !isArchived
         : isArchived;
@@ -199,43 +195,6 @@ function toggleProjectsViewMenu(e: Event): void {
 
 function createProject(): void {
   openEditProjectPopup();
-}
-
-function updateProject(projectId: number): void {
-  openEditProjectPopup(projectId);
-}
-
-function archiveProject(project: Project): void {
-  confirm.require({
-    header: 'Archive project',
-    message: 'Are you sure?',
-    acceptClass: 'p-button-danger',
-    defaultFocus: 'reject',
-    accept: () => {
-      projectsController.archiveProject(project);
-    },
-  });
-}
-
-function restoreProject(project: Project): void {
-  projectsController.restoreProject(project);
-}
-
-function deleteProject(project: Project): void {
-  confirm.require({
-    header: 'Delete project',
-    message: 'This action will delete all related data. Are you sure?',
-    acceptClass: 'p-button-danger',
-    defaultFocus: 'reject',
-    accept: () => {
-      state.deletingProjectId = project.id;
-
-      projectsController.deleteProject(project)
-        .then(() => {
-          state.deletingProjectId = ZERO;
-        });
-    },
-  });
 }
 </script>
 

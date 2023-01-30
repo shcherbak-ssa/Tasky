@@ -10,15 +10,19 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import com.tasky.server.models.Assets;
+import com.tasky.server.models.AssetsColor;
+import com.tasky.server.models.AssetsProjectIcon;
+import com.tasky.server.models.Project;
 import com.tasky.server.models.Settings;
 import com.tasky.server.services.AssetsService;
+import com.tasky.server.services.ProjectsService;
 import com.tasky.server.services.SettingsService;
 import com.tasky.server.shared.constants.SettingsConstants;
 import com.tasky.server.shared.utils.LocalResourceLoader;
 
 @Component
 public class ApplicationStartupRunner implements CommandLineRunner {
-  
+
   @Autowired
   private Environment env;
 
@@ -27,6 +31,9 @@ public class ApplicationStartupRunner implements CommandLineRunner {
 
   @Autowired
   private AssetsService assetsService;
+
+  @Autowired
+  private ProjectsService projectsService;
 
   // @TODO: remove
   @Autowired
@@ -43,9 +50,25 @@ public class ApplicationStartupRunner implements CommandLineRunner {
     this.logger.info("Load assets to database");
 
     // @TODO: remove
-    Settings settings = new Settings(SettingsConstants.PROJECTS_VIEW_TILES, LocalDateTime.now());
+    Settings settings = new Settings(SettingsConstants.PROJECTS_VIEW_LIST, LocalDateTime.now());
     this.settingsService.createSettings(settings);
     this.logger.info("Add settings");
+
+    // @TODO: remove
+    AssetsColor color = new AssetsColor();
+    color.setId((long) 8);
+
+    AssetsProjectIcon icon = new AssetsProjectIcon();
+    icon.setId((long) 4);
+
+    Project project = new Project();
+    project.setName("Tasky");
+    project.setDescription("The project goal is to get Java Spring practice.");
+    project.setColor(color);
+    project.setIcon(icon);
+    project.setCreatedAt(LocalDateTime.now());
+
+    projectsService.createProject(project);
   }
 
   private void loadAssetsToDatabase() throws Exception {

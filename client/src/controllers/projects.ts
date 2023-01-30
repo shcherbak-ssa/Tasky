@@ -1,7 +1,7 @@
 import type {
   ProjectsApi,
   ProjectsStorage,
-  ProjectsController as BaseProjectController,
+  ProjectsController as BaseProjectsController,
   ProjectUpdates,
   AssetsController,
   Validator,
@@ -20,17 +20,17 @@ import {
 import { Project } from 'models/project';
 import { BaseController } from './base-controller';
 
-export class ProjectController
+export class ProjectsController
   extends BaseController<ProjectsApi, ProjectsStorage, ProjectUpdates>
-  implements BaseProjectController
+  implements BaseProjectsController
 {
 
   public static create(
     api: ProjectsApi,
     storage: ProjectsStorage,
     validator: Validator<ProjectUpdates>,
-  ): ProjectController {
-    return new ProjectController(api, storage, validator);
+  ): ProjectsController {
+    return new ProjectsController(api, storage, validator);
   }
 
   public activateProject(id: number = ZERO): boolean {
@@ -38,7 +38,7 @@ export class ProjectController
       let projectToActivate: Project;
 
       if (id === ZERO) {
-        const assetsController: AssetsController = ProjectController.controllers[Controller.ASSETS];
+        const assetsController: AssetsController = ProjectsController.controllers[Controller.ASSETS];
 
         projectToActivate = Project.create();
         projectToActivate.color = assetsController.getAssets('colors')[0];
@@ -70,6 +70,29 @@ export class ProjectController
     this.storage.setActiveProject(null);
   }
 
+  public async loadProject(id: number): Promise<boolean> {
+    const appController: AppController = ProjectsController.controllers[Controller.APP];
+
+    try {
+      const project: Project = await this.api.getProject(id);
+      this.addProjectToStorage(project);
+
+      return true;
+    } catch (e: any) {
+      console.log(e); // @TODO: add error
+
+      if (e.name === ErrorName.API_ERROR) {
+        appController.showNotification({
+          type: NotificationType.ERROR,
+          heading: e.heading,
+          message: e.message,
+        });
+      }
+
+      return false;
+    }
+  }
+
   public async loadProjects(): Promise<boolean> {
     try {
       const projects: Project[] = await this.api.getProjects();
@@ -83,15 +106,15 @@ export class ProjectController
   }
 
   public async saveProject(project: Project): Promise<ErrorObject<ProjectUpdates> | null> {
-    const appController: AppController = ProjectController.controllers[Controller.APP];
+    const appController: AppController = ProjectsController.controllers[Controller.APP];
     const isNewProject: boolean = project.isNewProject();
 
     try {
-      if (isNewProject) {
-        await this.createProject(project);
-      } else {
-        await this.updateProject(project);
-      }
+      const savedProject: Project = isNewProject
+        ? await this.createProject(project)
+        : await this.updateProject(project);
+
+      this.updateActiveProject(savedProject);
 
       appController.showNotification({
         type: NotificationType.SUCCESS,
@@ -114,7 +137,7 @@ export class ProjectController
   }
 
   public async archiveProject(projectToArchive: Project): Promise<boolean> {
-    const appController: AppController = ProjectController.controllers[Controller.APP];
+    const appController: AppController = ProjectsController.controllers[Controller.APP];
 
     try {
       appController.showNotification({
@@ -150,7 +173,7 @@ export class ProjectController
   }
 
   public async restoreProject(projectToRestore: Project): Promise<boolean> {
-    const appController: AppController = ProjectController.controllers[Controller.APP];
+    const appController: AppController = ProjectsController.controllers[Controller.APP];
 
     try {
       appController.showNotification({
@@ -187,7 +210,7 @@ export class ProjectController
   }
 
   public async deleteProject(projectToDelete: Project): Promise<boolean> {
-    const appController: AppController = ProjectController.controllers[Controller.APP];
+    const appController: AppController = ProjectsController.controllers[Controller.APP];
 
     try {
       appController.showNotification({
@@ -198,15 +221,13 @@ export class ProjectController
       });
 
       projectToDelete.delete();
+
       await this.updateProject(projectToDelete);
 
+      this.storage.removeProject(projectToDelete.id);
+
       const undoInterval: number = setTimeout(
-        () => {
-          this.api.deleteProject(projectToDelete.id)
-            .then(() => {
-              this.storage.removeProject(projectToDelete.id);
-            });
-        },
+        () => this.api.deleteProject(projectToDelete.id),
         UNDO_NOTIFICATION_LIFE,
       );
 
@@ -235,20 +256,44 @@ export class ProjectController
     }
   }
 
-  private async createProject(project: Project): Promise<void> {
+  private async createProject(project: Project): Promise<Project> {
     let projectUpdates: ProjectUpdates = project.getUpdates();
     projectUpdates = this.validator.validateToCreate(projectUpdates);
 
     const createdProject: Project = await this.api.createProject(projectUpdates);
-    this.storage.addProject(createdProject);
+    this.addProjectToStorage(createdProject);
+
+    return createdProject;
   }
 
-  private async updateProject(project: Project): Promise<void> {
+  private async updateProject(project: Project): Promise<Project> {
     let projectUpdates: ProjectUpdates = project.getUpdates();
     projectUpdates = this.validator.validateToUpdate(projectUpdates);
 
     await this.api.updateProject(project.id, projectUpdates);
-    this.storage.updateProject(project.mergeWithUpdates(projectUpdates));
+
+    const updatedProject: Project = project.mergeWithUpdates(projectUpdates);
+    this.addProjectToStorage(updatedProject);
+
+    return updatedProject;
+  }
+
+  private addProjectToStorage(projectToAdd: Project): void {
+    const projects: Project[] = this.storage.getProjects();
+    const projectIds: number[] = projects.map(({ id }) => id);
+
+    let updatedProjects: Project[] = [];
+
+    if (projectIds.includes(projectToAdd.id)) {
+      updatedProjects = projects
+        .map((project) => {
+          return project.id === projectToAdd.id ? projectToAdd : project;
+        });
+    } else {
+      updatedProjects = [ ...projects, projectToAdd ];
+    }
+
+    this.storage.setProjects(updatedProjects);
   }
 
 }

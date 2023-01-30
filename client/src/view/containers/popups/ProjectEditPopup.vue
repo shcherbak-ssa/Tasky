@@ -72,15 +72,14 @@
 import { computed, onMounted, reactive } from 'vue';
 import PrimevueTextarea from 'primevue/textarea';
 
-import type { Project } from 'models/project';
 import type { AppController, ErrorObject, ProjectsController, ProjectUpdates } from 'shared/types';
 import { Controller } from 'shared/constants';
 import { getProjectDueDate } from 'shared/utils';
-import { useController } from 'view/hooks';
+import { ActiveProject, useActiveProject, useController, useProjectPage } from 'view/hooks';
 import { type Store, useStore } from 'view/store';
 
 import BaseDatePicker from 'view/components/base/BaseDatePicker.vue';
-import ProjectAssets from 'view/components/projects/ProjectAssets.vue';
+import ProjectAssets from 'view/containers/projects/ProjectAssetsContainer.vue';
 
 type State = {
   isPopupOpen: boolean;
@@ -99,12 +98,10 @@ const state = reactive<State>({
 
 const store: Store = useStore();
 
+const activeProject: ActiveProject = useActiveProject();
+const openProjectPage = useProjectPage();
 const appController: AppController = useController(Controller.APP);
 const projectsController: ProjectsController = useController(Controller.PROJECTS);
-
-const activeProject = computed<Project>(() => {
-  return store.getters.getActiveProject();
-});
 
 const hasUpdates = computed<boolean>(() => {
   return activeProject.value.hasUpdates();
@@ -126,7 +123,9 @@ async function saveProject(): Promise<void> {
   } else {
     closePopup();
 
-    projectsController.removeActiveProject();
+    if (state.isNewProject) {
+      openProjectPage(activeProject.value.id);
+    }
   }
 
   state.isSaveProcessing = false;
