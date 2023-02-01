@@ -46,7 +46,7 @@ public class Project {
   private Boolean hasDueDate;
 
   @Column
-  private LocalDate dueDate;
+  private LocalDateTime dueDate;
 
   @Column
   private Boolean isArchived;
@@ -75,7 +75,7 @@ public class Project {
     AssetsColor color,
     AssetsProjectIcon icon,
     Boolean hasDueDate,
-    LocalDate dueDate,
+    LocalDateTime dueDate,
     Boolean isArchived,
     LocalDateTime archivedAt,
     LocalDateTime createdAt,
@@ -139,8 +139,12 @@ public class Project {
     this.icon = icon;
   }
 
-  public LocalDate getDueDate() {
-    return dueDate;
+  public LocalDateTime getDueDate() {
+    return this.dueDate;
+  }
+
+  public void setDueDate(LocalDateTime dueDate) {
+    this.dueDate = dueDate;
   }
 
   public Boolean getHasDueDate() {
@@ -149,10 +153,6 @@ public class Project {
 
   public void setHasDueDate(Boolean hasDueDate) {
     this.hasDueDate = hasDueDate;
-  }
-
-  public void setDueDate(LocalDate dueDate) {
-    this.dueDate = dueDate;
   }
 
   public Boolean getIsArchived() {
