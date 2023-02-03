@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = AssetsConstants.COLORS_DATABASE_TABLE_NAME)
 public class AssetsColor {
-  
+
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;

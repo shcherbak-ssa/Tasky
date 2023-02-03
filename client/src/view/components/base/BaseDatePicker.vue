@@ -7,6 +7,7 @@
       :showButtonBar="true"
       :showIcon="true"
       :manualInput="false"
+      :readonly="props.readonly"
       @date-select="(value: Date) => emits('date-select', value)"
       @clear-click="emits('date-select', undefined)"
     />
@@ -19,6 +20,7 @@ import PrimevueCalendar from 'primevue/calendar';
 type Props = {
   value: Date | null;
   placeholder: string;
+  readonly?: boolean;
 }
 
 // Properties

@@ -84,11 +84,11 @@ const assetsPanel = ref(null);
 const store: Store = useStore();
 
 const assetsColors = computed<AssetsColor[]>(() => {
-  return store.state.app.assets.colors;
+  return store.state.assets.colors;
 });
 
 const assetsProjectIcons = computed<AssetsProjectIcon[]>(() => {
-  return store.state.app.assets.projectIcons;
+  return store.state.assets.projectIcons;
 });
 
 // Methods

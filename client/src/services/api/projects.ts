@@ -1,7 +1,7 @@
 import type { ProjectsApi as BaseProjectsApi, ProjectFitler, ProjectUpdates, ProjectSchema } from 'shared/types';
 import { Project } from 'models/project';
 import { ApiEndpoint } from 'shared/constants';
-import { BaseApi } from './base-api';
+import { BaseApi } from './lib/base-api';
 
 export class ProjectsApi implements BaseProjectsApi {
 

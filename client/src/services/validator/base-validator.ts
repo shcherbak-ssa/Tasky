@@ -18,7 +18,7 @@ export class BaseValidator<T> implements Validator<T> {
       this.throwValidationError(error);
     }
 
-    return cloneObject(value);
+    return cloneObject({ ...updates, ...value });
   }
 
   public validateToUpdate(updates: T): T {
@@ -28,7 +28,7 @@ export class BaseValidator<T> implements Validator<T> {
       this.throwValidationError(error);
     }
 
-    return cloneObject(value);
+    return cloneObject({ ...updates, ...value });
   }
 
   private throwValidationError(error: Joi.ValidationError): void {

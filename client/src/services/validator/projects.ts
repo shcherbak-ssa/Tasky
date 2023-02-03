@@ -1,13 +1,13 @@
 import Joi from 'joi';
 import type { ProjectUpdates } from 'shared/types';
-import { projectValidationRules } from 'shared/constants';
+import { EMPTY_STRING, projectValidationRules } from 'shared/constants';
 import { BaseValidator } from './base-validator';
 
 export class ProjectsValidator extends BaseValidator<ProjectUpdates> {
 
   protected schema: Joi.ObjectSchema<ProjectUpdates> = Joi.object({
     name: Joi.string().trim().empty(),
-    description: Joi.string().trim(),
+    description: Joi.string().trim().empty(EMPTY_STRING),
     color: Joi.object({
       id: Joi.number(),
       bgColor: Joi.string().length(projectValidationRules.bgColorLength),

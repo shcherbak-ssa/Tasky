@@ -36,6 +36,7 @@
             placeholder="Project name"
             :class="{ 'p-invalid': state.projectError.name }"
             :value="activeProject.name"
+            :autofocus="true"
             @input="updateProjectName"
           />
 
@@ -69,18 +70,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive } from 'vue';
+import { computed, onMounted, onUnmounted, reactive } from 'vue';
 import PrimevueTextarea from 'primevue/textarea';
 
-import type { Project } from 'models/project';
 import type { AppController, ErrorObject, ProjectsController, ProjectUpdates } from 'shared/types';
 import { Controller } from 'shared/constants';
 import { getProjectDueDate } from 'shared/utils';
-import { useController } from 'view/hooks';
+import { UseProject, useProject, useController, useProjectPage } from 'view/hooks';
 import { type Store, useStore } from 'view/store';
 
 import BaseDatePicker from 'view/components/base/BaseDatePicker.vue';
-import ProjectAssets from 'view/components/projects/ProjectAssets.vue';
+import ProjectAssets from 'view/containers/projects/ProjectAssetsContainer.vue';
 
 type State = {
   isPopupOpen: boolean;
@@ -99,12 +99,10 @@ const state = reactive<State>({
 
 const store: Store = useStore();
 
+const activeProject: UseProject = useProject({ type: 'active' });
+const openProjectPage = useProjectPage();
 const appController: AppController = useController(Controller.APP);
 const projectsController: ProjectsController = useController(Controller.PROJECTS);
-
-const activeProject = computed<Project>(() => {
-  return store.getters.getActiveProject();
-});
 
 const hasUpdates = computed<boolean>(() => {
   return activeProject.value.hasUpdates();
@@ -113,6 +111,10 @@ const hasUpdates = computed<boolean>(() => {
 // Hooks
 onMounted(() => {
   state.isNewProject = activeProject.value.isNewProject();
+});
+
+onUnmounted(() => {
+  projectsController.removeActiveProject();
 });
 
 // Methods
@@ -126,7 +128,9 @@ async function saveProject(): Promise<void> {
   } else {
     closePopup();
 
-    projectsController.removeActiveProject();
+    if (state.isNewProject) {
+      openProjectPage(activeProject.value.id);
+    }
   }
 
   state.isSaveProcessing = false;

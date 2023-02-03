@@ -16,3 +16,13 @@ export class ValidationError<T> extends Error {
     this.errors = errors;
   }
 }
+
+export class ApiError extends Error {
+  name: string = ErrorName.API_ERROR;
+  heading: string;
+
+  constructor(heading: string, message: string) {
+    super(message);
+    this.heading = heading;
+  }
+}

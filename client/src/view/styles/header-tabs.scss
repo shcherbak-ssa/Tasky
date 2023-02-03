@@ -1,0 +1,36 @@
+.header-tabs {
+  @apply relative z-10;
+
+  &.p-component {
+    @apply text-sm;
+  }
+
+  &.p-tabmenu {
+    .p-tabmenu-nav {
+      @apply bg-transparent border-0 gap-6;
+
+      .p-tabmenuitem {
+
+        &:not(.p-highlight):not(.p-disabled):hover .p-menuitem-link {
+          @apply bg-transparent;
+          color: var(--text-color);
+          border-color: var(--text-color-secondary);
+        }
+
+        .p-menuitem-link {
+          @apply bg-transparent border-transparent px-0 py-2 m-0;
+          font-weight: 500;
+        }
+
+        &.p-highlight .p-menuitem-link {
+          @apply bg-transparent;
+          border-color: var(--primary-color);
+        }
+
+        .p-menuitem-link:not(.p-disabled):focus {
+          box-shadow: none;
+        }
+      }
+    }
+  }
+}

@@ -5,7 +5,7 @@
         v-for="(item, index) in props.tabs"
         :key="index"
         :class="{
-          'opacity-25 select-none click': item.key !== activeTabKey,
+          'opacity-25 select-none click': item.key !== props.activeTabKey,
         }"
         @click.stop="emits('select-tab', item.key)"
       >

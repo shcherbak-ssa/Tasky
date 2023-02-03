@@ -17,21 +17,12 @@ export class ProjectsStorage extends BaseStorage implements BaseProjectsStorage 
     return this.storage.getters.getProject(id);
   }
 
+  public getProjects(): Project[] {
+    return this.storage.state.projects.list;
+  }
+
   public setProjects(projects: Project[]): void {
     this.storage.commit(StoreMutation.ADD_PROJECTS, projects);
-  }
-
-  public addProject(project: Project): void {
-    this.setProjects([ ...this.storage.state.projects.list, project ]);
-  }
-
-  public updateProject(projectToUpdate: Project): void {
-    const updatedProjects: Project[] = this.storage.state.projects.list
-      .map((project) => {
-        return project.id === projectToUpdate.id ? projectToUpdate : project;
-      });
-
-    this.setProjects(updatedProjects);
   }
 
   public removeProject(id: number): void {
@@ -49,6 +40,10 @@ export class ProjectsStorage extends BaseStorage implements BaseProjectsStorage 
 
   public setActiveProject(project: Project | null): void {
     this.storage.commit(StoreMutation.SET_ACTIVE_PROJECT, project);
+  }
+
+  public setPageProject(project: Project | null): void {
+    this.storage.commit(StoreMutation.SET_PAGE_PROJECT, project);
   }
 
 }

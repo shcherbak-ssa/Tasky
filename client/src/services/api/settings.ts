@@ -1,7 +1,7 @@
 import type { SettingsApi as BaseSettingsApi, SettingsSchema, SettingsUpdates } from 'shared/types';
 import { ApiEndpoint } from 'shared/constants';
 import { Settings } from 'models/settings';
-import { BaseApi } from './base-api';
+import { BaseApi } from './lib/base-api';
 
 export class SettingsApi implements BaseSettingsApi {
 

@@ -1,16 +1,36 @@
-import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
-import { PageRoute } from 'shared/constants';
+import 'vue-router';
 
-import OverviewPage from 'view/pages/OverviewPage.vue';
+import { RouteRecordRaw, createRouter, createWebHistory, Router } from 'vue-router';
+import { PageName, PagePath, PageTitle } from 'shared/constants';
 
-const routes: Array<RouteRecordRaw> = [
+import HomePage from 'view/pages/HomePage.vue';
+import ProjectPage from 'view/pages/ProjectPage.vue';
+
+declare module 'vue-router' {
+  interface RouteMeta {
+    pageTitle: string;
+    pageHeading: string;
+  }
+}
+
+const routes: RouteRecordRaw[] = [
   {
-    path: PageRoute.OVERVIEW,
-    component: OverviewPage,
+    path: PagePath.HOME,
+    component: HomePage,
+    meta: {
+      pageTitle: PageTitle.HOME,
+      pageHeading: PageTitle.HOME,
+    },
   },
+  {
+    path: PagePath.PROJECT,
+    component: ProjectPage,
+    name: PageName.PROJECT,
+    props: true,
+  }
 ];
 
-export const router = createRouter({
+export const router: Router = createRouter({
   history: createWebHistory(),
   routes,
 });

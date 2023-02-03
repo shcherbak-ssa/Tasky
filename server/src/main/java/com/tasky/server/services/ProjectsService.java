@@ -1,8 +1,11 @@
 package com.tasky.server.services;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -10,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.tasky.server.database.ProjectsDatabase;
 import com.tasky.server.models.Project;
+import com.tasky.server.shared.constants.ProjectsConstants;
 import com.tasky.server.shared.exceptions.ResourceNotFoundException;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -20,6 +24,8 @@ import jakarta.persistence.criteria.Root;
 
 @Service
 public class ProjectsService {
+
+  private Map<Long, Timer> timers = new HashMap<>();
 
   @Autowired
   private ProjectsDatabase database;
@@ -35,12 +41,7 @@ public class ProjectsService {
   }
 
   public List<Project> getProjects() {
-    List<Project> projects = this.database.findAll(ProjectsService.onlyActiveProjects());
-
-    Thread removeDeletedProjects = new RemoveDeletedProjects(this.database);
-    removeDeletedProjects.start();
-
-    return projects;
+    return this.database.findAll(ProjectsService.onlyActiveProjects());
   }
 
   public Project createProject(Project newProject) {
@@ -55,6 +56,7 @@ public class ProjectsService {
       Project updatedProject = projectToUpdate.mergeWithUpdates(projectUpdates);
 
       this.database.save(updatedProject);
+      this.handleDeletedProject(projectUpdates);
 
       return;
     }
@@ -64,29 +66,51 @@ public class ProjectsService {
 
   public void deleteProject(Long id) {
     this.database.deleteById(id);
+
+    this.removeTimer(id);
   }
 
-  private class RemoveDeletedProjects extends Thread {
+  private void handleDeletedProject(Project projectUpdates) {
+    Boolean isDeleted = projectUpdates.getIsDeleted();
+    Long projectId = projectUpdates.getId();
 
-    private ProjectsDatabase database;
+    if (isDeleted == null) {
+      return;
+    }
 
-    public RemoveDeletedProjects(ProjectsDatabase database) {
-      this.database = database;
+    if (isDeleted) {
+      Timer timer = new Timer();
+      TimerTask task = new RemoveDeletedProjectTask(projectId, this);
+
+      this.timers.put(projectId, timer);
+
+      timer.schedule(task, ProjectsConstants.REMOVE_DELETED_PROJECT_TASK_DELAY);
+    } else {
+      this.removeTimer(projectId);
+    }
+  }
+
+  private void removeTimer(Long projectId) {
+    Timer timer = this.timers.remove(projectId);
+
+    if (timer != null) {
+      timer.cancel();
+    }
+  }
+
+  private class RemoveDeletedProjectTask extends TimerTask {
+
+    private Long projectId;
+    private ProjectsService service;
+
+    public RemoveDeletedProjectTask(Long projectId, ProjectsService service) {
+      this.projectId = projectId;
+      this.service = service;
     }
 
     @Override
     public void run() {
-      List<Project> deletedProjects = this.database.findAll(ProjectsService.onlyDeletedProjects());
-
-      if (deletedProjects.isEmpty()) {
-        return;
-      }
-
-      List<Long> deletedProjectIds = deletedProjects.stream()
-        .map((project) -> project.getId())
-        .collect(Collectors.toList());
-
-      this.database.deleteAllById(deletedProjectIds);
+      this.service.deleteProject(this.projectId);
     }
 
   }
@@ -102,19 +126,6 @@ public class ProjectsService {
           builder.isNull(isDeletedPath),
           builder.equal(isDeletedPath, false)
         );
-      }
-
-    };
-  }
-
-  private static Specification<Project> onlyDeletedProjects() {
-    return new Specification<Project>() {
-
-      @Override
-      public Predicate toPredicate(Root<Project> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
-        Path<Project> isDeletedPath = root.get("isDeleted");
-
-        return builder.equal(isDeletedPath, true);
       }
 
     };

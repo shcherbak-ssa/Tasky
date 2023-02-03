@@ -11,6 +11,7 @@ export type Mutations = {
   [StoreMutation.SET_SETTINGS](state: StoreState, settings: Settings): void;
   [StoreMutation.ADD_PROJECTS](state: StoreState, projects: Project[]): void;
   [StoreMutation.SET_ACTIVE_PROJECT](state: StoreState, project: Project | null): void;
+  [StoreMutation.SET_PAGE_PROJECT](state: StoreState, project: Project | null): void;
 }
 
 export const mutations: MutationTree<StoreState> & Mutations = {
@@ -24,7 +25,7 @@ export const mutations: MutationTree<StoreState> & Mutations = {
   },
 
   [StoreMutation.ADD_ASSETS](state: StoreState, assets: Assets) : void {
-    state.app.assets = assets;
+    state.assets = assets;
   },
 
   [StoreMutation.SET_SETTINGS](state: StoreState, settings: Settings): void {
@@ -37,6 +38,10 @@ export const mutations: MutationTree<StoreState> & Mutations = {
 
   [StoreMutation.SET_ACTIVE_PROJECT](state: StoreState, project: Project | null): void {
     state.projects.active = project;
+  },
+
+  [StoreMutation.SET_PAGE_PROJECT](state: StoreState, project: Project | null): void {
+    state.projects.page = project;
   },
 
 };
