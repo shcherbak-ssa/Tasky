@@ -8,6 +8,4 @@ public interface ValidationGroups {
 
   public interface ToUpdate extends Default {}
 
-  public interface Optional extends Default {}
-
 }
