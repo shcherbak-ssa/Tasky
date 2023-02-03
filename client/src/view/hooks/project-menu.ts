@@ -57,9 +57,7 @@ export function useProjectMenu(): (project: Project) => MenuItem[] {
               projectsController.deleteProject(project)
                 .then((success) => {
                   if (success) {
-                    router.push({
-                      path: PagePath.HOME,
-                    });
+                    router.push({ path: PagePath.HOME });
                   }
                 });
             },

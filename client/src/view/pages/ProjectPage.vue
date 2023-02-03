@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, onMounted, onUnmounted, reactive } from 'vue';
+import { computed, defineAsyncComponent, onMounted, onUnmounted, reactive, watch } from 'vue';
 
 import type { ProjectsController } from 'shared/types';
 import { Controller, ProjectPageTabKey } from 'shared/constants';
@@ -72,7 +72,24 @@ const activeTabComponent = computed(() => {
 });
 
 // Hooks
+watch(
+  () => props.id,
+  () => setupPage(),
+);
+
 onMounted(async () => {
+  setupPage();
+});
+
+onUnmounted(() => {
+  projectsController.removePageProject();
+});
+
+// Methods
+async function setupPage(): Promise<void> {
+  state.isLoaded = false;
+  state.isPageProjectSetted = false;
+
   const projectId: number = Number(props.id);
   const isProjectLoaded: boolean = await projectsController.loadProject(projectId);
 
@@ -85,13 +102,8 @@ onMounted(async () => {
   }
 
   state.isLoaded = true;
-});
+}
 
-onUnmounted(() => {
-  projectsController.removePageProject();
-});
-
-// Methods
 function changeTab(tabKey: ProjectPageTabKey): void {
   state.activeTabKey = tabKey;
 }

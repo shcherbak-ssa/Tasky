@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tasky.server.models.Project;
+import com.tasky.server.models.ProjectMenuItem;
 import com.tasky.server.services.ProjectsService;
 import com.tasky.server.shared.constants.ApiEndpoints;
 import com.tasky.server.shared.validations.ValidationGroups.ToCreate;
@@ -37,6 +38,12 @@ public class ProjectsController {
   @ResponseStatus(HttpStatus.OK)
   public List<Project> getProjects() {
     return this.service.getProjects();
+  }
+
+  @GetMapping(path = ApiEndpoints.PROJECTS_MENU_ITEMS)
+  @ResponseStatus(HttpStatus.OK)
+  public List<ProjectMenuItem> getProjectMenuItems() {
+    return this.service.getProjectMenuItem();
   }
 
   @PostMapping(path = ApiEndpoints.PROJECTS)

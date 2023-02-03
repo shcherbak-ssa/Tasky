@@ -1,4 +1,4 @@
-import type { ProjectsStorage as BaseProjectsStorage } from 'shared/types';
+import type { ProjectMenuItem, ProjectsStorage as BaseProjectsStorage } from 'shared/types';
 import type { Project } from 'models/project';
 import { StoreMutation } from 'shared/constants';
 import { BaseStorage } from './base-storage';
@@ -32,6 +32,10 @@ export class ProjectsStorage extends BaseStorage implements BaseProjectsStorage 
       });
 
     this.setProjects(updatedProjects);
+  }
+
+  public setMenuItems(items: ProjectMenuItem[]): void {
+    this.storage.commit(StoreMutation.SET_PROJECT_MENU_ITEMS, items);
   }
 
   public getActiveProject(): Project {

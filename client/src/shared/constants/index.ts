@@ -30,6 +30,7 @@ export enum ApiEndpoint {
   ASSETS = '/api/assets',
   PROJECTS = '/api/projects',
   PROJECTS_ID = '/api/projects/:id',
+  PROJECTS_MENU_ITEMS = '/api/projects/menu-items',
   SETTINGS = '/api/settings',
 }
 
@@ -129,6 +130,7 @@ export const defaultStoreState: StoreState = {
   },
   projects: {
     list: [],
+    menuItems: [],
     active: null,
     page: null,
   },
@@ -141,6 +143,7 @@ export enum StoreMutation {
   SET_PAGE_META = 'set-page-meta',
   ADD_ASSETS = 'add-assets',
   ADD_PROJECTS = 'add-projects',
+  SET_PROJECT_MENU_ITEMS = 'set-project-menu-items',
   SET_ACTIVE_PROJECT = 'set-active-project',
   SET_PAGE_PROJECT = 'set-page-project',
 }

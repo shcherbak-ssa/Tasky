@@ -3,6 +3,7 @@ import type { Project } from 'models/project';
 
 export type ProjectsState = {
   list: Project[];
+  menuItems: ProjectMenuItem[];
   active: Project | null;
   page: Project | null;
 }
@@ -26,12 +27,15 @@ export type ProjectUpdates = Partial<Omit<ProjectSchema, 'id'>>;
 
 export type ProjectFitler = {}
 
+export type ProjectMenuItem = Pick<ProjectSchema, 'id' | 'name' | 'color' | 'isArchived'>;
+
 export interface ProjectsController {
   activateProject(id?: number): boolean;
   updateActiveProject(activateProject: Project): void;
   removeActiveProject(): void
   setPageProject(id: number): boolean;
   removePageProject(): void;
+  loadProjectMenuItems(): Promise<boolean>;
   loadProject(id: number): Promise<boolean>;
   loadProjects(): Promise<boolean>;
   saveProject(project: Project): Promise<ErrorObject<ProjectUpdates> | null>;
@@ -41,6 +45,7 @@ export interface ProjectsController {
 }
 
 export interface ProjectsApi {
+  getProjectMenuItems(): Promise<ProjectMenuItem[]>;
   getProject(id: number): Promise<Project>;
   getProjects(filter?: ProjectFitler): Promise<Project[]>;
   createProject(updates: ProjectUpdates): Promise<Project>;
@@ -54,6 +59,7 @@ export interface ProjectsStorage {
   getProjects(): Project[];
   setProjects(projects: Project[]): void;
   removeProject(id: number): void;
+  setMenuItems(items: ProjectMenuItem[]): void;
   getActiveProject(): Project;
   setActiveProject(project: Project | null): void;
   setPageProject(project: Project | null): void;

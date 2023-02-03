@@ -1,0 +1,10 @@
+.app-menu {
+  &.p-menu {
+    @apply border-0 w-full;
+  }
+
+  .project-menu-item {
+    color: var(--text-color);
+    line-height: 1;
+  }
+}

@@ -1,4 +1,4 @@
-import type { ProjectsApi as BaseProjectsApi, ProjectFitler, ProjectUpdates, ProjectSchema } from 'shared/types';
+import type { ProjectsApi as BaseProjectsApi, ProjectFitler, ProjectUpdates, ProjectSchema, ProjectMenuItem } from 'shared/types';
 import { Project } from 'models/project';
 import { ApiEndpoint } from 'shared/constants';
 import { BaseApi } from './lib/base-api';
@@ -9,6 +9,12 @@ export class ProjectsApi implements BaseProjectsApi {
 
   public static create(): ProjectsApi {
     return new ProjectsApi();
+  }
+
+  public async getProjectMenuItems(): Promise<ProjectMenuItem[]> {
+    return await BaseApi.get({
+      endpoint: ApiEndpoint.PROJECTS_MENU_ITEMS,
+    });
   }
 
   public async getProject(id: number): Promise<Project> {

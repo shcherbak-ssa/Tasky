@@ -7,6 +7,7 @@ import type {
   Validator,
   ErrorObject,
   AppController,
+ProjectMenuItem,
 } from 'shared/types';
 import {
   Controller,
@@ -85,6 +86,29 @@ export class ProjectsController
     this.storage.setPageProject(null);
   }
 
+  public async loadProjectMenuItems(): Promise<boolean> {
+    const appController: AppController = ProjectsController.controllers[Controller.APP];
+
+    try {
+      const projectMenuItems: ProjectMenuItem[] = await this.api.getProjectMenuItems();
+      this.storage.setMenuItems(projectMenuItems);
+
+      return true;
+    } catch (e: any) {
+      console.log(e); // @TODO: add error
+
+      if (e.name === ErrorName.API_ERROR) {
+        appController.showNotification({
+          type: NotificationType.ERROR,
+          heading: e.heading,
+          message: e.message,
+        });
+      }
+
+      return false;
+    }
+  }
+
   public async loadProject(id: number): Promise<boolean> {
     const appController: AppController = ProjectsController.controllers[Controller.APP];
 
@@ -109,13 +133,26 @@ export class ProjectsController
   }
 
   public async loadProjects(): Promise<boolean> {
+    const appController: AppController = ProjectsController.controllers[Controller.APP];
+
     try {
       const projects: Project[] = await this.api.getProjects();
       this.storage.setProjects(projects);
 
+      await this.loadProjectMenuItems();
+
       return true;
-    } catch (e) {
+    } catch (e: any) {
       console.log(e); // @TODO: add error
+
+      if (e.name === ErrorName.API_ERROR) {
+        appController.showNotification({
+          type: NotificationType.ERROR,
+          heading: e.heading,
+          message: e.message,
+        });
+      }
+
       return false;
     }
   }
@@ -131,6 +168,8 @@ export class ProjectsController
 
       this.updateActiveProject(savedProject);
 
+      await this.loadProjectMenuItems();
+
       appController.showNotification({
         type: NotificationType.SUCCESS,
         heading: isNewProject ? 'Created' : 'Updated',
@@ -143,6 +182,14 @@ export class ProjectsController
         appController.showNotification(e.notification);
 
         return e.errors;
+      }
+
+      if (e.name === ErrorName.API_ERROR) {
+        appController.showNotification({
+          type: NotificationType.ERROR,
+          heading: e.heading,
+          message: e.message,
+        });
       }
 
       console.log(e); // @TODO: add error
@@ -163,7 +210,9 @@ export class ProjectsController
       });
 
       projectToArchive.archive();
+
       await this.updateProject(projectToArchive);
+      await this.loadProjectMenuItems();
 
       await appController.removeNotification();
 
@@ -201,6 +250,7 @@ export class ProjectsController
       projectToRestore.restore();
 
       await this.updateProject(projectToRestore);
+      await this.loadProjectMenuItems();
 
       await appController.removeNotification();
 
@@ -238,6 +288,7 @@ export class ProjectsController
       projectToDelete.delete();
 
       await this.updateProject(projectToDelete);
+      await this.loadProjectMenuItems();
 
       this.storage.removeProject(projectToDelete.id);
 
@@ -254,6 +305,7 @@ export class ProjectsController
           deletedProject.restore();
 
           this.updateProject(deletedProject);
+          this.loadProjectMenuItems();
         },
       });
 

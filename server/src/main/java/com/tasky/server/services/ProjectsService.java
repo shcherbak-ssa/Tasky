@@ -6,13 +6,16 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.tasky.server.ApplicationConfiguration;
 import com.tasky.server.database.ProjectsDatabase;
 import com.tasky.server.models.Project;
+import com.tasky.server.models.ProjectMenuItem;
 import com.tasky.server.shared.constants.ProjectsConstants;
 import com.tasky.server.shared.exceptions.ResourceNotFoundException;
 
@@ -42,6 +45,15 @@ public class ProjectsService {
 
   public List<Project> getProjects() {
     return this.database.findAll(ProjectsService.onlyActiveProjects());
+  }
+
+  public List<ProjectMenuItem> getProjectMenuItem() {
+    List<Project> projects = this.getProjects();
+
+    return projects
+      .stream()
+      .map((project) -> (ProjectMenuItem) ApplicationConfiguration.context.getBean("projectMenuItem", project))
+      .collect(Collectors.toList());
   }
 
   public Project createProject(Project newProject) {

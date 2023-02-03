@@ -1,4 +1,5 @@
 @import "./header-tabs.scss";
+@import "./app-menu.scss";
 
 .p-scrollpanel {
   & &-bar {
@@ -119,5 +120,19 @@
 
   &.p-confirm-dialog .p-confirm-dialog-message {
     margin: 0;
+  }
+}
+
+.p-sidebar {
+  &.p-sidebar-left {
+    @apply w-full xs:w-64;
+  }
+
+  & &-header {
+    @apply justify-between;
+  }
+
+  & &-content {
+    @apply p-0;
   }
 }

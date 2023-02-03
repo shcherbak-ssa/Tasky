@@ -51,12 +51,11 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, TransitionGroup, watch } from 'vue';
 import type { MenuItem } from 'primevue/menuitem';
-import { useConfirm } from 'primevue/useconfirm';
 
 import type { ProjectsController, SettingsController } from 'shared/types';
 import type { Project } from 'models/project';
 import type { Settings } from 'models/settings';
-import { Controller, ProjectsView, ZERO } from 'shared/constants';
+import { Controller, ProjectsView } from 'shared/constants';
 import { useController, useEditProjectPopup, useProjectPage } from 'view/hooks';
 import { type Store, useStore } from 'view/store';
 
@@ -86,7 +85,6 @@ const state = reactive<State>({
 const projectsViewMenu = ref(null);
 
 const store: Store = useStore();
-const confirm = useConfirm();
 
 const openProjectPage = useProjectPage();
 const openEditProjectPopup = useEditProjectPopup();

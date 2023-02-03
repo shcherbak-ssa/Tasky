@@ -1,7 +1,7 @@
 import type { MutationTree } from 'vuex';
 import type { Project } from 'models/project';
 import type { Settings } from 'models/settings';
-import type { AppNotification, Assets, StoreState } from 'shared/types';
+import type { AppNotification, Assets, ProjectMenuItem, StoreState } from 'shared/types';
 import { Popup, StoreMutation } from 'shared/constants';
 
 export type Mutations = {
@@ -10,6 +10,7 @@ export type Mutations = {
   [StoreMutation.ADD_ASSETS](state: StoreState, assets: Assets): void;
   [StoreMutation.SET_SETTINGS](state: StoreState, settings: Settings): void;
   [StoreMutation.ADD_PROJECTS](state: StoreState, projects: Project[]): void;
+  [StoreMutation.SET_PROJECT_MENU_ITEMS](state: StoreState, items: ProjectMenuItem[]): void;
   [StoreMutation.SET_ACTIVE_PROJECT](state: StoreState, project: Project | null): void;
   [StoreMutation.SET_PAGE_PROJECT](state: StoreState, project: Project | null): void;
 }
@@ -34,6 +35,10 @@ export const mutations: MutationTree<StoreState> & Mutations = {
 
   [StoreMutation.ADD_PROJECTS](state: StoreState, projects: Project[]): void {
     state.projects.list = [ ...projects ];
+  },
+
+  [StoreMutation.SET_PROJECT_MENU_ITEMS](state: StoreState, items: ProjectMenuItem[]): void {
+    state.projects.menuItems = [ ...items ];
   },
 
   [StoreMutation.SET_ACTIVE_PROJECT](state: StoreState, project: Project | null): void {

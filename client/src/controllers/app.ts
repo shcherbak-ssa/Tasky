@@ -4,6 +4,7 @@ import type {
   AppNotification,
   AppStorage,
   AssetsController,
+  ProjectsController,
   SettingsController,
   Validator,
 } from 'shared/types';
@@ -33,10 +34,12 @@ export class AppController extends BaseController<AppApi, AppStorage, {}> implem
   public async setup(): Promise<boolean> {
     try {
       const assetsController: AssetsController = BaseController.controllers[Controller.ASSETS];
+      const projectsController: ProjectsController = BaseController.controllers[Controller.PROJECTS];
       const settingsController: SettingsController = BaseController.controllers[Controller.SETTINGS];
 
       await Promise.all([
         assetsController.loadAssets(),
+        projectsController.loadProjectMenuItems(),
         settingsController.loadSettings(),
       ]);
 
