@@ -70,13 +70,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive } from 'vue';
+import { computed, onMounted, onUnmounted, reactive } from 'vue';
 import PrimevueTextarea from 'primevue/textarea';
 
 import type { AppController, ErrorObject, ProjectsController, ProjectUpdates } from 'shared/types';
 import { Controller } from 'shared/constants';
 import { getProjectDueDate } from 'shared/utils';
-import { ActiveProject, useActiveProject, useController, useProjectPage } from 'view/hooks';
+import { UseProject, useProject, useController, useProjectPage } from 'view/hooks';
 import { type Store, useStore } from 'view/store';
 
 import BaseDatePicker from 'view/components/base/BaseDatePicker.vue';
@@ -99,7 +99,7 @@ const state = reactive<State>({
 
 const store: Store = useStore();
 
-const activeProject: ActiveProject = useActiveProject();
+const activeProject: UseProject = useProject({ type: 'active' });
 const openProjectPage = useProjectPage();
 const appController: AppController = useController(Controller.APP);
 const projectsController: ProjectsController = useController(Controller.PROJECTS);
@@ -111,6 +111,10 @@ const hasUpdates = computed<boolean>(() => {
 // Hooks
 onMounted(() => {
   state.isNewProject = activeProject.value.isNewProject();
+});
+
+onUnmounted(() => {
+  projectsController.removeActiveProject();
 });
 
 // Methods

@@ -70,6 +70,21 @@ export class ProjectsController
     this.storage.setActiveProject(null);
   }
 
+  public setPageProject(id: number): boolean {
+    const project: Project | undefined = this.storage.getProject(id);
+
+    if (project) {
+      this.storage.setPageProject(project);
+      return true;
+    }
+
+    return false;
+  }
+
+  public removePageProject(): void {
+    this.storage.setPageProject(null);
+  }
+
   public async loadProject(id: number): Promise<boolean> {
     const appController: AppController = ProjectsController.controllers[Controller.APP];
 

@@ -4,6 +4,7 @@ import type { Project } from 'models/project';
 export type ProjectsState = {
   list: Project[];
   active: Project | null;
+  page: Project | null;
 }
 
 export type ProjectSchema = {
@@ -29,6 +30,8 @@ export interface ProjectsController {
   activateProject(id?: number): boolean;
   updateActiveProject(activateProject: Project): void;
   removeActiveProject(): void
+  setPageProject(id: number): boolean;
+  removePageProject(): void;
   loadProject(id: number): Promise<boolean>;
   loadProjects(): Promise<boolean>;
   saveProject(project: Project): Promise<ErrorObject<ProjectUpdates> | null>;
@@ -53,4 +56,5 @@ export interface ProjectsStorage {
   removeProject(id: number): void;
   getActiveProject(): Project;
   setActiveProject(project: Project | null): void;
+  setPageProject(project: Project | null): void;
 }

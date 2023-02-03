@@ -3,12 +3,12 @@
     <ProjectAssetsContainer
       mode="show"
       size="normal"
-      :project="activeProject"
+      :project="pageProject"
     />
 
     <div class="flex flex-col" style="margin-bottom: -8px;">
       <div class="flex items-center gap-2">
-        <h1>{{ activeProject.name }}</h1>
+        <h1>{{ pageProject.name }}</h1>
 
         <BaseButton
           class="p-button-sm p-button-text p-button-rounded"
@@ -18,7 +18,7 @@
 
         <BaseMenu
           ref="projectPageMenu"
-          :model="getProjectMuteItems(activeProject)"
+          :model="getProjectMuteItems(pageProject)"
           :popup="true"
         />
       </div>
@@ -38,7 +38,7 @@ import PrimevueTabMenu, { TabMenuChangeEvent } from 'primevue/tabmenu';
 import type { MenuItem } from 'primevue/menuitem';
 import { ProjectPageTabKey } from 'shared/constants';
 import { updateDocumentTitle } from 'shared/utils';
-import { type ActiveProject, useActiveProject, useProjectMenu } from 'view/hooks';
+import { type UseProject, useProject, useProjectMenu } from 'view/hooks';
 
 import ProjectAssetsContainer from 'view/containers/projects/ProjectAssetsContainer.vue';
 
@@ -47,7 +47,7 @@ const emits = defineEmits(['tab-change']);
 
 const projectPageMenu = ref(null);
 
-const activeProject: ActiveProject = useActiveProject();
+const pageProject: UseProject = useProject({ type: 'page' });
 const getProjectMuteItems = useProjectMenu();
 
 const tabs: MenuItem[] = [
@@ -67,7 +67,7 @@ const tabs: MenuItem[] = [
 
 // Hooks
 onMounted(() => {
-  updateDocumentTitle(activeProject.value.name);
+  updateDocumentTitle(pageProject.value.name);
 });
 
 // Methods

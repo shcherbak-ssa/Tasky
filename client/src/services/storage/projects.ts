@@ -42,4 +42,8 @@ export class ProjectsStorage extends BaseStorage implements BaseProjectsStorage 
     this.storage.commit(StoreMutation.SET_ACTIVE_PROJECT, project);
   }
 
+  public setPageProject(project: Project | null): void {
+    this.storage.commit(StoreMutation.SET_PAGE_PROJECT, project);
+  }
+
 }

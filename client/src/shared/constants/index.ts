@@ -130,6 +130,7 @@ export const defaultStoreState: StoreState = {
   projects: {
     list: [],
     active: null,
+    page: null,
   },
 };
 
@@ -141,4 +142,5 @@ export enum StoreMutation {
   ADD_ASSETS = 'add-assets',
   ADD_PROJECTS = 'add-projects',
   SET_ACTIVE_PROJECT = 'set-active-project',
+  SET_PAGE_PROJECT = 'set-page-project',
 }

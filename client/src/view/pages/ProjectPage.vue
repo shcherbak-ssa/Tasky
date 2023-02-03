@@ -1,5 +1,5 @@
 <template>
-  <DefaultLayout v-if="state.isLoaded && state.isProjectActivated">
+  <DefaultLayout v-if="state.isLoaded && state.isPageProjectSetted">
     <template #header>
       <ProjectPageHeaderContainer @tab-change="changeTab" />
     </template>
@@ -9,7 +9,7 @@
     </Transition>
   </DefaultLayout>
 
-  <ErrorLayout v-else-if="state.isLoaded && !state.isProjectActivated">
+  <ErrorLayout v-else-if="state.isLoaded && !state.isPageProjectSetted">
     Project not found.
   </ErrorLayout>
 
@@ -17,10 +17,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, onMounted, reactive } from 'vue';
+import { computed, defineAsyncComponent, onMounted, onUnmounted, reactive } from 'vue';
 
 import type { ProjectsController } from 'shared/types';
-import { Controller, ProjectPageTabKey, ZERO } from 'shared/constants';
+import { Controller, ProjectPageTabKey } from 'shared/constants';
 import { useController } from 'view/hooks';
 
 import DefaultLayout from 'view/layouts/DefaultLayout.vue';
@@ -28,16 +28,16 @@ import ErrorLayout from 'view/layouts/ErrorLayout.vue';
 import ProjectPageHeaderContainer from 'view/containers/projects/ProjectPageHeaderContainer.vue';
 import ProjectPageSkeleton from 'view/components/projects/ProjectPageSkeleton.vue';
 
-const ProjectOverviewContainer = defineAsyncComponent(() => {
-  return import('view/containers/projects/ProjectOverviewContainer.vue');
+const ProjectPageOverviewContainer = defineAsyncComponent(() => {
+  return import('view/containers/projects/ProjectPageOverviewContainer.vue');
 });
 
-const ProjectTaskListContainer = defineAsyncComponent(() => {
-  return import('view/containers/projects/ProjectTaskListContainer.vue');
+const ProjectPageListContainer = defineAsyncComponent(() => {
+  return import('view/containers/projects/ProjectPageListContainer.vue');
 });
 
-const ProjectTaskBoardContainer = defineAsyncComponent(() => {
-  return import('view/containers/projects/ProjectTaskBoardContainer.vue');
+const ProjectPageBoardContainer = defineAsyncComponent(() => {
+  return import('view/containers/projects/ProjectPageBoardContainer.vue');
 });
 
 type Props = {
@@ -46,7 +46,7 @@ type Props = {
 
 type State = {
   isLoaded: boolean;
-  isProjectActivated: boolean;
+  isPageProjectSetted: boolean;
   activeTabKey: ProjectPageTabKey;
 }
 
@@ -54,7 +54,7 @@ type State = {
 const props = defineProps<Props>();
 const state = reactive<State>({
   isLoaded: false,
-  isProjectActivated: false,
+  isPageProjectSetted: false,
   activeTabKey: ProjectPageTabKey.OVERVIEW,
 });
 
@@ -63,11 +63,11 @@ const projectsController: ProjectsController = useController(Controller.PROJECTS
 const activeTabComponent = computed(() => {
   switch (state.activeTabKey) {
     case ProjectPageTabKey.OVERVIEW:
-      return ProjectOverviewContainer;
+      return ProjectPageOverviewContainer;
     case ProjectPageTabKey.LIST:
-      return ProjectTaskListContainer;
+      return ProjectPageListContainer;
     case ProjectPageTabKey.BOARD:
-      return ProjectTaskBoardContainer;
+      return ProjectPageBoardContainer;
   }
 });
 
@@ -77,14 +77,18 @@ onMounted(async () => {
   const isProjectLoaded: boolean = await projectsController.loadProject(projectId);
 
   if (isProjectLoaded) {
-    const isProjectActivated: boolean = projectsController.activateProject(projectId);
+    const isPageProjectSetted: boolean = projectsController.setPageProject(projectId);
 
-    if (isProjectActivated) {
-      state.isProjectActivated = true;
+    if (isPageProjectSetted) {
+      state.isPageProjectSetted = true;
     }
   }
 
   state.isLoaded = true;
+});
+
+onUnmounted(() => {
+  projectsController.removePageProject();
 });
 
 // Methods

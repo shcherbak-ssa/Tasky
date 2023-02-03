@@ -10,6 +10,7 @@ export type Getters = {
   hasProject(state: StoreState): (id: number) => boolean;
   getProject(state: StoreState): (id: number) => Project | undefined;
   getActiveProject(state: StoreState): () => Project;
+  getPageProject(state: StoreState): () => Project;
 }
 
 export const getters: GetterTree<StoreState, StoreState> & Getters = {
@@ -23,7 +24,7 @@ export const getters: GetterTree<StoreState, StoreState> & Getters = {
       }
 
       // @TODO: add error
-      throw new Error('Color found');
+      throw new Error('Color not found');
     }
   },
 
@@ -36,7 +37,7 @@ export const getters: GetterTree<StoreState, StoreState> & Getters = {
       }
 
       // @TODO: add error
-      throw new Error('Project icon found');
+      throw new Error('Project icon not found');
     }
   },
 
@@ -69,6 +70,19 @@ export const getters: GetterTree<StoreState, StoreState> & Getters = {
 
       if (activeProject) {
         return activeProject;
+      }
+
+      // @TODO: add error
+      throw new Error('No project selected');
+    };
+  },
+
+  getPageProject(state: StoreState) {
+    return (): Project => {
+      const { page: pageProject } = state.projects;
+
+      if (pageProject) {
+        return pageProject;
       }
 
       // @TODO: add error
