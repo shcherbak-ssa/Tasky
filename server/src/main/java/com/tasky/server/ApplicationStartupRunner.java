@@ -2,8 +2,6 @@ package com.tasky.server;
 
 import java.time.LocalDateTime;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.env.Environment;
@@ -39,20 +37,18 @@ public class ApplicationStartupRunner implements CommandLineRunner {
   @Autowired
   private SettingsService settingsService;
 
-  protected final Log logger = LogFactory.getLog(getClass());
-
   @Override
   public void run(String... args) throws Exception {
     this.addConsoleSpace();
     this.logStartedMessage();
 
     this.loadAssetsToDatabase();
-    this.logger.info("Load assets to database");
+    this.log("# Load assets to database");
 
     // @TODO: remove
     Settings settings = new Settings(SettingsConstants.PROJECTS_VIEW_LIST, LocalDateTime.now());
     this.settingsService.createSettings(settings);
-    this.logger.info("Add settings");
+    this.log("# Add settings");
 
     // @TODO: remove
     AssetsColor color = new AssetsColor();
@@ -69,6 +65,8 @@ public class ApplicationStartupRunner implements CommandLineRunner {
     project.setCreatedAt(LocalDateTime.now());
 
     projectsService.createProject(project);
+
+    this.log("\n");
   }
 
   private void loadAssetsToDatabase() throws Exception {
@@ -79,16 +77,17 @@ public class ApplicationStartupRunner implements CommandLineRunner {
   }
 
   private void addConsoleSpace() {
-    System.out.println("");
-    System.out.println("##########################################################");
-    System.out.println("");
+    this.log("\n");
+    this.log("##########################################################");
+    this.log("\n");
   }
 
   private void logStartedMessage() {
-    this.logger.info(String.format(
-      "Application started on port %s",
-      this.env.getProperty("server.port")
-    ));
+    this.log(String.format("# Application started on port %s", this.env.getProperty("server.port")));
+  }
+
+  private void log(String message) {
+    System.out.println(message);
   }
 
 }

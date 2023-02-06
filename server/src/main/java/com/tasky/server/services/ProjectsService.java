@@ -34,7 +34,7 @@ public class ProjectsService {
   private ProjectsDatabase database;
 
   public Project getProjectById(Long id) throws ResourceNotFoundException {
-    Optional<Project> foundProject = this.database.findById(id);
+    final Optional<Project> foundProject = this.database.findById(id);
 
     if (foundProject.isPresent()) {
       return foundProject.get();

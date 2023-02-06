@@ -10,6 +10,8 @@ import com.tasky.server.models.Assets;
 import com.tasky.server.models.ErrorResponse;
 import com.tasky.server.models.Project;
 import com.tasky.server.models.ProjectMenuItem;
+import com.tasky.server.models.Section;
+import com.tasky.server.models.helpers.SectionToCreate;
 
 @Configurable
 public class ApplicationConfiguration {
@@ -32,7 +34,7 @@ public class ApplicationConfiguration {
   @Bean
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   public ProjectMenuItem projectMenuItem(Project project) {
-    ProjectMenuItem menuItem = new ProjectMenuItem();
+    final ProjectMenuItem menuItem = new ProjectMenuItem();
 
     menuItem.setId(project.getId());
     menuItem.setName(project.getName());
@@ -40,6 +42,19 @@ public class ApplicationConfiguration {
     menuItem.setIsArchived(project.getIsArchived());
 
     return menuItem;
+  }
+
+  @Bean
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  public Section section(SectionToCreate sectionToCreate) {
+    final Project project = new Project();
+    project.setId(sectionToCreate.getProjectId());
+
+    final Section section = new Section();
+    section.setName(sectionToCreate.getName());
+    section.setProject(project);
+
+    return section;
   }
 
 }
