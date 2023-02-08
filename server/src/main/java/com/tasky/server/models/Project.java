@@ -3,6 +3,7 @@ package com.tasky.server.models;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.tasky.server.shared.constants.DatabaseConstants;
 import com.tasky.server.shared.constants.ProjectsConstants;
 import com.tasky.server.shared.validations.ValidationGroups.ToCreate;
 import com.tasky.server.shared.validations.ValidationGroups.ToUpdate;
@@ -22,7 +23,7 @@ import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = ProjectsConstants.DATABASE_TABLE_NAME)
+@Table(name = DatabaseConstants.Table.PROJECTS)
 public class Project {
 
   @Id
@@ -70,7 +71,7 @@ public class Project {
   @Column
   private Boolean isDeleted;
 
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "project")
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = ProjectsConstants.SECTIONS_MAPPED_BY)
   private List<Section> sections;
 
   public Project() {}

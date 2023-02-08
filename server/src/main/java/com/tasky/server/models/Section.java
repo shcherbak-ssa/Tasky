@@ -1,6 +1,7 @@
 package com.tasky.server.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tasky.server.shared.constants.DatabaseConstants;
 import com.tasky.server.shared.constants.SectionsConstants;
 
 import jakarta.persistence.Column;
@@ -14,7 +15,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = SectionsConstants.DATABASE_TABLE_NAME)
+@Table(name = DatabaseConstants.Table.SECTIONS)
 public class Section {
 
   @Id
@@ -26,7 +27,7 @@ public class Section {
   private String name;
 
   @ManyToOne
-  @JoinColumn(name = "project_id")
+  @JoinColumn(name = SectionsConstants.PROJECT_JOIN_COLUMN_NAME)
   @JsonIgnore
   private Project project;
 

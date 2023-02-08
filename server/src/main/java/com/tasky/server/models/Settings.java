@@ -3,6 +3,7 @@ package com.tasky.server.models;
 import java.time.LocalDateTime;
 
 import com.tasky.server.shared.annotations.EqualTo;
+import com.tasky.server.shared.constants.DatabaseConstants;
 import com.tasky.server.shared.constants.SettingsConstants;
 import com.tasky.server.shared.validations.ValidationGroups.ToUpdate;
 
@@ -15,7 +16,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = SettingsConstants.DATABASE_TABLE_NAME)
+@Table(name = DatabaseConstants.Table.SETTINGS)
 public class Settings {
 
   @Id
@@ -64,13 +65,13 @@ public class Settings {
     this.updatedAt = updatedAt;
   }
 
-  public Settings mergeWithUpdates(Settings settingsUpdates) {
+  public Settings mergeWithUpdates(Settings updates) {
     Settings updatedSettings = new Settings();
 
     updatedSettings.setId(this.id);
-    updatedSettings.setUpdatedAt(settingsUpdates.updatedAt);
+    updatedSettings.setUpdatedAt(updates.updatedAt);
 
-    updatedSettings.setProjectsView(settingsUpdates.projectsView == null ? this.projectsView : settingsUpdates.projectsView);
+    updatedSettings.setProjectsView(updates.projectsView == null ? this.projectsView : updates.projectsView);
 
     return updatedSettings;
   }

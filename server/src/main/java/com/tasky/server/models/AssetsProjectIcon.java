@@ -1,6 +1,7 @@
 package com.tasky.server.models;
 
 import com.tasky.server.shared.constants.AssetsConstants;
+import com.tasky.server.shared.constants.DatabaseConstants;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,9 +11,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = AssetsConstants.PROJECT_ICONS_DATABASE_TABLE_NAME)
+@Table(name = DatabaseConstants.Table.ASSETS_PROJECT_ICONS)
 public class AssetsProjectIcon {
-  
+
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
@@ -24,7 +25,7 @@ public class AssetsProjectIcon {
   private String name;
 
   public AssetsProjectIcon() {}
-  
+
   public AssetsProjectIcon(String family, String name) {
     this.family = family;
     this.name = name;

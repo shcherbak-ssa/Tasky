@@ -12,7 +12,7 @@ import com.tasky.server.configs.AppConfig;
 import com.tasky.server.models.Section;
 import com.tasky.server.models.helpers.SectionToCreate;
 import com.tasky.server.services.SectionsService;
-import com.tasky.server.shared.constants.ApiEndpoints;
+import com.tasky.server.shared.constants.AppConstants;
 
 @RestController
 @Validated
@@ -21,7 +21,7 @@ public class SectionsController {
   @Autowired
   private SectionsService service;
 
-  @PostMapping(path = ApiEndpoints.SECTIONS)
+  @PostMapping(path = AppConstants.ApiEndpoints.SECTIONS)
   @ResponseStatus(HttpStatus.CREATED)
   public Section createSection(@RequestBody @Validated SectionToCreate sectionToCreate) {
     final Section newSection = (Section) AppConfig.context.getBean("section", sectionToCreate);

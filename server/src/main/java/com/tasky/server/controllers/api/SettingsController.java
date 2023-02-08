@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tasky.server.models.Settings;
 import com.tasky.server.services.SettingsService;
-import com.tasky.server.shared.constants.ApiEndpoints;
+import com.tasky.server.shared.constants.AppConstants;
 import com.tasky.server.shared.validations.ValidationGroups.ToUpdate;
 
 @RestController
@@ -21,14 +21,14 @@ public class SettingsController {
   @Autowired
   private SettingsService service;
 
-  @GetMapping(path = ApiEndpoints.SETTINGS)
+  @GetMapping(path = AppConstants.ApiEndpoints.SETTINGS)
   @ResponseStatus(HttpStatus.OK)
   public Settings getSettings() {
     // @TODO: change logic
     return this.service.getSettings((long) 1);
   }
 
-  @PutMapping(path = ApiEndpoints.SETTINGS)
+  @PutMapping(path = AppConstants.ApiEndpoints.SETTINGS)
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void updatesSettings(@RequestBody @Validated(ToUpdate.class) Settings settingsUpdates) {
     this.service.updateSettings(settingsUpdates);
