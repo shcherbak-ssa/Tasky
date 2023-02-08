@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tasky.server.ApplicationConfiguration;
+import com.tasky.server.configs.AppConfig;
 import com.tasky.server.models.Section;
 import com.tasky.server.models.helpers.SectionToCreate;
 import com.tasky.server.services.SectionsService;
@@ -24,7 +24,7 @@ public class SectionsController {
   @PostMapping(path = ApiEndpoints.SECTIONS)
   @ResponseStatus(HttpStatus.CREATED)
   public Section createSection(@RequestBody @Validated SectionToCreate sectionToCreate) {
-    final Section newSection = (Section) ApplicationConfiguration.context.getBean("section", sectionToCreate);
+    final Section newSection = (Section) AppConfig.context.getBean("section", sectionToCreate);
 
     return this.service.createSection(newSection);
   }

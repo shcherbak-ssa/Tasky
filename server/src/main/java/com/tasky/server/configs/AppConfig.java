@@ -1,4 +1,4 @@
-package com.tasky.server;
+package com.tasky.server.configs;
 
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -14,10 +14,10 @@ import com.tasky.server.models.Section;
 import com.tasky.server.models.helpers.SectionToCreate;
 
 @Configurable
-public class ApplicationConfiguration {
+public class AppConfig {
 
   public static AnnotationConfigApplicationContext context
-    = new AnnotationConfigApplicationContext(ApplicationConfiguration.class);
+    = new AnnotationConfigApplicationContext(AppConfig.class);
 
   @Bean
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)

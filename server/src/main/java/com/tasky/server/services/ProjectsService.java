@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import com.tasky.server.ApplicationConfiguration;
+import com.tasky.server.configs.AppConfig;
 import com.tasky.server.database.ProjectsDatabase;
 import com.tasky.server.models.Project;
 import com.tasky.server.models.ProjectMenuItem;
@@ -52,7 +52,7 @@ public class ProjectsService {
 
     return projects
       .stream()
-      .map((project) -> (ProjectMenuItem) ApplicationConfiguration.context.getBean("projectMenuItem", project))
+      .map((project) -> (ProjectMenuItem) AppConfig.context.getBean("projectMenuItem", project))
       .collect(Collectors.toList());
   }
 
