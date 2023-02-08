@@ -1,5 +1,6 @@
 import type { AssetsColor, AssetsProjectIcon, ErrorObject } from 'shared/types';
 import type { Project } from 'models/project';
+import type { SectionSchema } from './sections';
 
 export type ProjectsState = {
   list: Project[];
@@ -21,6 +22,7 @@ export type ProjectSchema = {
   createdAt: Date | null;
   updatedAt: Date | null;
   isDeleted: boolean;
+  sections: SectionSchema[];
 }
 
 export type ProjectUpdates = Partial<Omit<ProjectSchema, 'id'>>;

@@ -7,6 +7,7 @@ import type { SettingsController } from './settings';
 export * from './app';
 export * from './assets';
 export * from './projects';
+export * from './sections';
 export * from './settings';
 
 export type ErrorObject<T> = {
