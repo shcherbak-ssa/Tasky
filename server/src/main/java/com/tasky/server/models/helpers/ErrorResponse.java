@@ -1,4 +1,4 @@
-package com.tasky.server.models;
+package com.tasky.server.models.helpers;
 
 import java.util.Map;
 

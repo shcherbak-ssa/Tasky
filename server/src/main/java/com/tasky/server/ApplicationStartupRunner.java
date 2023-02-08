@@ -7,11 +7,11 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import com.tasky.server.models.Assets;
 import com.tasky.server.models.AssetsColor;
 import com.tasky.server.models.AssetsProjectIcon;
 import com.tasky.server.models.Project;
 import com.tasky.server.models.Settings;
+import com.tasky.server.models.helpers.Assets;
 import com.tasky.server.services.AssetsService;
 import com.tasky.server.services.ProjectsService;
 import com.tasky.server.services.SettingsService;

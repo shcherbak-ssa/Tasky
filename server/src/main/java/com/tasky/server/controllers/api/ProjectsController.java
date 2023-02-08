@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tasky.server.models.Project;
-import com.tasky.server.models.ProjectMenuItem;
+import com.tasky.server.models.helpers.ProjectMenuItem;
 import com.tasky.server.services.ProjectsService;
 import com.tasky.server.shared.constants.ApiEndpoints;
 import com.tasky.server.shared.validations.ValidationGroups.ToCreate;

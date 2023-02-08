@@ -5,9 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.tasky.server.models.Assets;
 import com.tasky.server.models.AssetsColor;
 import com.tasky.server.models.AssetsProjectIcon;
+import com.tasky.server.models.helpers.Assets;
 import com.tasky.server.configs.AppConfig;
 import com.tasky.server.database.AssetsColorsDatabase;
 import com.tasky.server.database.AssetsProjectIconsDatabase;

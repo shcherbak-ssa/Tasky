@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tasky.server.models.Assets;
+import com.tasky.server.models.helpers.Assets;
 import com.tasky.server.services.AssetsService;
 import com.tasky.server.shared.constants.ApiEndpoints;
 

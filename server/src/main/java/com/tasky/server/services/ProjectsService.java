@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import com.tasky.server.configs.AppConfig;
 import com.tasky.server.database.ProjectsDatabase;
 import com.tasky.server.models.Project;
-import com.tasky.server.models.ProjectMenuItem;
+import com.tasky.server.models.helpers.ProjectMenuItem;
 import com.tasky.server.shared.constants.ProjectsConstants;
 import com.tasky.server.shared.exceptions.ResourceNotFoundException;
 
