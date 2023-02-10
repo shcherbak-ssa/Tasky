@@ -1,7 +1,7 @@
 package com.tasky.server.models;
 
+import com.tasky.server.shared.constants.AppConstants;
 import com.tasky.server.shared.constants.AssetsConstants;
-import com.tasky.server.shared.constants.DatabaseConstants;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,7 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = DatabaseConstants.Table.ASSETS_COLORS)
+@Table(name = AppConstants.Table.ASSETS_COLORS)
 public class AssetsColor {
 
   @Id

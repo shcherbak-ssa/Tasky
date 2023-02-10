@@ -21,14 +21,14 @@ public class SettingsController {
   @Autowired
   private SettingsService service;
 
-  @GetMapping(path = AppConstants.ApiEndpoints.SETTINGS)
+  @GetMapping(path = AppConstants.ApiEndpoint.SETTINGS)
   @ResponseStatus(HttpStatus.OK)
   public Settings getSettings() {
     // @TODO: change logic
     return this.service.getSettings((long) 1);
   }
 
-  @PutMapping(path = AppConstants.ApiEndpoints.SETTINGS)
+  @PutMapping(path = AppConstants.ApiEndpoint.SETTINGS)
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void updatesSettings(@RequestBody @Validated(ToUpdate.class) Settings settingsUpdates) {
     this.service.updateSettings(settingsUpdates);

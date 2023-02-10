@@ -28,31 +28,31 @@ public class ProjectsController {
   @Autowired
   private ProjectsService service;
 
-  @GetMapping(path = AppConstants.ApiEndpoints.PROJECTS_ID)
+  @GetMapping(path = AppConstants.ApiEndpoint.PROJECTS_ID)
   @ResponseStatus(HttpStatus.OK)
   public Project getProjectById(@PathVariable Long id) {
     return this.service.getProjectById(id);
   }
 
-  @GetMapping(path = AppConstants.ApiEndpoints.PROJECTS)
+  @GetMapping(path = AppConstants.ApiEndpoint.PROJECTS)
   @ResponseStatus(HttpStatus.OK)
   public List<Project> getProjects() {
     return this.service.getProjects();
   }
 
-  @GetMapping(path = AppConstants.ApiEndpoints.PROJECTS_MENU_ITEMS)
+  @GetMapping(path = AppConstants.ApiEndpoint.PROJECTS_MENU_ITEMS)
   @ResponseStatus(HttpStatus.OK)
   public List<ProjectMenuItem> getProjectMenuItems() {
     return this.service.getProjectMenuItem();
   }
 
-  @PostMapping(path = AppConstants.ApiEndpoints.PROJECTS)
+  @PostMapping(path = AppConstants.ApiEndpoint.PROJECTS)
   @ResponseStatus(HttpStatus.CREATED)
   public Project createProject(@RequestBody @Validated(ToCreate.class) Project projectToCreate) {
     return this.service.createProject(projectToCreate);
   }
 
-  @PutMapping(path = AppConstants.ApiEndpoints.PROJECTS_ID)
+  @PutMapping(path = AppConstants.ApiEndpoint.PROJECTS_ID)
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void updateProject(
     @PathVariable Long id,
@@ -63,7 +63,7 @@ public class ProjectsController {
     this.service.updateProject(projectUpdates);
   }
 
-  @DeleteMapping(path = AppConstants.ApiEndpoints.PROJECTS_ID)
+  @DeleteMapping(path = AppConstants.ApiEndpoint.PROJECTS_ID)
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void deleteProject(@PathVariable Long id) {
     this.service.deleteProject(id);

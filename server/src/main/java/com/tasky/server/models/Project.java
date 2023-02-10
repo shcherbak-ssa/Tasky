@@ -3,27 +3,23 @@ package com.tasky.server.models;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.tasky.server.shared.constants.DatabaseConstants;
-import com.tasky.server.shared.constants.ProjectsConstants;
+import com.tasky.server.shared.constants.AppConstants;
 import com.tasky.server.shared.validations.ValidationGroups.ToCreate;
 import com.tasky.server.shared.validations.ValidationGroups.ToUpdate;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = DatabaseConstants.Table.PROJECTS)
+@Table(name = AppConstants.Table.PROJECTS)
 public class Project {
 
   @Id
@@ -71,9 +67,6 @@ public class Project {
   @Column
   private Boolean isDeleted;
 
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = ProjectsConstants.SECTIONS_MAPPED_BY)
-  private List<Section> sections;
-
   public Project() {}
 
   public Project(
@@ -101,7 +94,6 @@ public class Project {
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
     this.isDeleted = isDeleted;
-    this.sections = sections;
   }
 
   public Long getId() {
@@ -204,14 +196,6 @@ public class Project {
     this.isDeleted = isDeleted;
   }
 
-  public List<Section> getSections() {
-    return this.sections;
-  }
-
-  public void setSections(List<Section> sections) {
-    this.sections = sections;
-  }
-
   public Project mergeWithUpdates(Project updates) {
     Project updatedProject = new Project();
 
@@ -244,8 +228,7 @@ public class Project {
   public String toString() {
     return "Project [id=" + id + ", name=" + name + ", description=" + description + ", color=" + color + ", icon="
       + icon + ", hasDueDate=" + hasDueDate + ", dueDate=" + dueDate + ", isArchived=" + isArchived + ", archivedAt="
-      + archivedAt + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", isDeleted=" + isDeleted
-      + ", sections=" + sections + "]";
+      + archivedAt + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", isDeleted=" + isDeleted + "]";
   }
 
 }

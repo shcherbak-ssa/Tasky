@@ -3,7 +3,7 @@ package com.tasky.server.models;
 import java.time.LocalDateTime;
 
 import com.tasky.server.shared.annotations.EqualTo;
-import com.tasky.server.shared.constants.DatabaseConstants;
+import com.tasky.server.shared.constants.AppConstants;
 import com.tasky.server.shared.constants.SettingsConstants;
 import com.tasky.server.shared.validations.ValidationGroups.ToUpdate;
 
@@ -16,7 +16,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = DatabaseConstants.Table.SETTINGS)
+@Table(name = AppConstants.Table.SETTINGS)
 public class Settings {
 
   @Id

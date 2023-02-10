@@ -11,7 +11,7 @@ import com.tasky.server.models.Section;
 import com.tasky.server.models.helpers.Assets;
 import com.tasky.server.models.helpers.ErrorResponse;
 import com.tasky.server.models.helpers.ProjectMenuItem;
-import com.tasky.server.models.helpers.SectionToCreate;
+import com.tasky.server.models.helpers.ClientSection;
 
 @Configurable
 public class AppConfig {
@@ -33,6 +33,15 @@ public class AppConfig {
 
   @Bean
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  public Project projectWithIdOnly(Long id) {
+    final Project project = new Project();
+    project.setId(id);
+
+    return project;
+  }
+
+  @Bean
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   public ProjectMenuItem projectMenuItem(Project project) {
     final ProjectMenuItem menuItem = new ProjectMenuItem();
 
@@ -46,15 +55,27 @@ public class AppConfig {
 
   @Bean
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-  public Section section(SectionToCreate sectionToCreate) {
+  public Section section(ClientSection clientSection) {
     final Project project = new Project();
-    project.setId(sectionToCreate.getProjectId());
+    project.setId(clientSection.getProjectId());
 
     final Section section = new Section();
-    section.setName(sectionToCreate.getName());
+    section.setName(clientSection.getName());
     section.setProject(project);
 
     return section;
+  }
+
+  @Bean
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  public ClientSection clientSection(Section section) {
+    final ClientSection clientSection = new ClientSection();
+
+    clientSection.setId(section.getId());
+    clientSection.setName(section.getName());
+    clientSection.setProjectId(section.getProject().getId());
+
+    return clientSection;
   }
 
 }

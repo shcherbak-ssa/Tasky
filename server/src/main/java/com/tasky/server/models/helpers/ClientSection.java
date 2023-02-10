@@ -6,7 +6,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @Component
-public class SectionToCreate {
+public class ClientSection {
+
+  private Long id;
 
   @NotBlank
   private String name;
@@ -14,11 +16,20 @@ public class SectionToCreate {
   @NotNull
   private Long projectId;
 
-  public SectionToCreate() {}
+  public ClientSection() {}
 
-  public SectionToCreate(String name, Long projectId) {
+  public ClientSection(Long id, String name, Long projectId) {
+    this.id = id;
     this.name = name;
     this.projectId = projectId;
+  }
+
+  public Long getId() {
+    return this.id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public String getName() {

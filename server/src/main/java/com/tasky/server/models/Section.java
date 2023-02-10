@@ -1,7 +1,6 @@
 package com.tasky.server.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tasky.server.shared.constants.DatabaseConstants;
+import com.tasky.server.shared.constants.AppConstants;
 import com.tasky.server.shared.constants.SectionsConstants;
 
 import jakarta.persistence.Column;
@@ -10,12 +9,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = DatabaseConstants.Table.SECTIONS)
+@Table(name = AppConstants.Table.SECTIONS)
 public class Section {
 
   @Id
@@ -27,8 +27,11 @@ public class Section {
   private String name;
 
   @ManyToOne
-  @JoinColumn(name = SectionsConstants.PROJECT_JOIN_COLUMN_NAME)
-  @JsonIgnore
+  @JoinTable(
+    name = AppConstants.Table.PROJECT_SECTIONS,
+    joinColumns = @JoinColumn(name = SectionsConstants.JOIN_TABLE_COLUMN),
+    inverseJoinColumns = @JoinColumn(name = SectionsConstants.JOIN_TABLE_INVERSE_COLUMN)
+  )
   private Project project;
 
   public Section() {}

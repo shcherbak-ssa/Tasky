@@ -1,5 +1,9 @@
 import type { Section } from 'models/section';
 
+export type SectionState = {
+  sections: SectionSchema[];
+}
+
 export type SectionSchema = {
   id: number;
   name: string;

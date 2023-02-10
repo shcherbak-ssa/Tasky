@@ -15,7 +15,6 @@ class ProjectSchemaDefault implements ProjectSchema {
   public createdAt: Date | null;
   public updatedAt: Date | null;
   public isDeleted: boolean;
-  public sections: SectionSchema[];
 
   private constructor(schema?: ProjectSchema) {
     this.id = schema?.id || ZERO;
@@ -30,7 +29,6 @@ class ProjectSchemaDefault implements ProjectSchema {
     this.createdAt = schema?.createdAt ? new Date(schema.createdAt) : null;
     this.updatedAt = schema?.updatedAt ? new Date(schema.updatedAt) : null;
     this.isDeleted = schema?.isDeleted || false;
-    this.sections = schema?.sections ? cloneObject(schema.sections) : [];
   }
 
   public static create(schema?: ProjectSchema): ProjectSchemaDefault {

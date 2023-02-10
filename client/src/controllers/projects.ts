@@ -87,6 +87,7 @@ export class ProjectsController
   }
 
   public async loadProjectMenuItems(): Promise<boolean> {
+    console.log('Load items');
     const appController: AppController = ProjectsController.controllers[Controller.APP];
 
     try {
@@ -227,7 +228,7 @@ export class ProjectsController
       if (e.name === ErrorName.VALIDATION_ERROR) {
         appController.showNotification(e.notification);
 
-        return e.errors;
+        return false;
       }
 
       console.log(e); // @TODO: add error
@@ -265,7 +266,7 @@ export class ProjectsController
       if (e.name === ErrorName.VALIDATION_ERROR) {
         appController.showNotification(e.notification);
 
-        return e.errors;
+        return false;
       }
 
       console.log(e); // @TODO: add error

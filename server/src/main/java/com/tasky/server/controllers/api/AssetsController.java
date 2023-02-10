@@ -16,7 +16,7 @@ public class AssetsController {
   @Autowired
   private AssetsService service;
 
-  @GetMapping(path = AppConstants.ApiEndpoints.ASSETS)
+  @GetMapping(path = AppConstants.ApiEndpoint.ASSETS)
   @ResponseStatus(HttpStatus.OK)
   public Assets getAssets() {
     return this.service.getAssets();
