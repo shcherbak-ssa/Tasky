@@ -1,8 +1,11 @@
-package com.tasky.server.models;
+package com.tasky.server.models.helpers;
 
 import java.util.List;
 
 import org.springframework.stereotype.Component;
+
+import com.tasky.server.models.AssetsColor;
+import com.tasky.server.models.AssetsProjectIcon;
 
 @Component
 public class Assets {
@@ -32,5 +35,5 @@ public class Assets {
   public void setProjectIcons(List<AssetsProjectIcon> projectIcons) {
     this.projectIcons = projectIcons;
   }
-  
+
 }

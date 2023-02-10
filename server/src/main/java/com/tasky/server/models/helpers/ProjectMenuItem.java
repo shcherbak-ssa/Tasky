@@ -1,6 +1,8 @@
-package com.tasky.server.models;
+package com.tasky.server.models.helpers;
 
 import org.springframework.stereotype.Component;
+
+import com.tasky.server.models.AssetsColor;
 
 @Component
 public class ProjectMenuItem {

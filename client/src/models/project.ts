@@ -1,4 +1,4 @@
-import type { AssetsColor, ProjectUpdates, ProjectSchema, AssetsProjectIcon } from 'shared/types';
+import type { AssetsColor, ProjectUpdates, ProjectSchema, AssetsProjectIcon, SectionSchema } from 'shared/types';
 import { EMPTY_STRING, ZERO } from 'shared/constants';
 import { cloneObject, getProjectDueDate } from 'shared/utils';
 

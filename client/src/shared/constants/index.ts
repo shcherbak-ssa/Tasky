@@ -17,6 +17,7 @@ export enum Controller {
   APP = 'app',
   ASSETS = 'assets',
   PROJECTS = 'projects',
+  SECTIONS = 'sections',
   SETTINGS = 'settings',
 }
 
@@ -146,4 +147,5 @@ export enum StoreMutation {
   SET_PROJECT_MENU_ITEMS = 'set-project-menu-items',
   SET_ACTIVE_PROJECT = 'set-active-project',
   SET_PAGE_PROJECT = 'set-page-project',
+  UPDATE_PROJECT_SECTIONS = 'update-project-sections',
 }

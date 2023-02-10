@@ -10,8 +10,8 @@ import org.springframework.web.bind.UnsatisfiedServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.tasky.server.ApplicationConfiguration;
-import com.tasky.server.models.ErrorResponse;
+import com.tasky.server.configs.AppConfig;
+import com.tasky.server.models.helpers.ErrorResponse;
 import com.tasky.server.shared.exceptions.ResourceNotFoundException;
 
 import jakarta.validation.ConstraintViolationException;
@@ -75,7 +75,7 @@ public class ExceptionsController {
   }
 
   private ErrorResponse createErrorResponse() {
-    return (ErrorResponse) ApplicationConfiguration.context.getBean("errorResponse");
+    return (ErrorResponse) AppConfig.context.getBean("errorResponse");
   }
 
 }

@@ -1,9 +1,9 @@
 package com.tasky.server.models;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
-import com.tasky.server.shared.constants.ProjectsConstants;
+import com.tasky.server.shared.constants.AppConstants;
 import com.tasky.server.shared.validations.ValidationGroups.ToCreate;
 import com.tasky.server.shared.validations.ValidationGroups.ToUpdate;
 
@@ -19,7 +19,7 @@ import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = ProjectsConstants.DATABASE_TABLE_NAME)
+@Table(name = AppConstants.Table.PROJECTS)
 public class Project {
 
   @Id
@@ -80,7 +80,8 @@ public class Project {
     LocalDateTime archivedAt,
     LocalDateTime createdAt,
     LocalDateTime updatedAt,
-    Boolean isDeleted
+    Boolean isDeleted,
+    List<Section> sections
   ) {
     this.name = name;
     this.description = description;
@@ -226,8 +227,8 @@ public class Project {
   @Override
   public String toString() {
     return "Project [id=" + id + ", name=" + name + ", description=" + description + ", color=" + color + ", icon="
-        + icon + ", hasDueDate=" + hasDueDate + ", dueDate=" + dueDate + ", isArchived=" + isArchived + ", archivedAt="
-        + archivedAt + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", isDeleted=" + isDeleted + "]";
+      + icon + ", hasDueDate=" + hasDueDate + ", dueDate=" + dueDate + ", isArchived=" + isArchived + ", archivedAt="
+      + archivedAt + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", isDeleted=" + isDeleted + "]";
   }
 
 }
